@@ -1,0 +1,51 @@
+#ifndef __INFINITY_H__
+#define __INFINITY_H__
+
+#include "main/infi_types.h"
+#include "main/infi_time.h"
+#include "main/infi_error.h"
+#include "main/infi_parameters.h"
+#include "main/infi_displays.h"
+#include "main/infi_window.h"
+#include "main/infi_main.h"
+#include "main/infi_keyboard.h"
+#include "main/infi_mouse.h"
+#include "main/infi_renderable.h"
+#include "main/infi_extension.h"
+
+#include "core/infi_raw_data.h"
+#include "core/infi_array.h"
+#include "core/infi_bitfield.h"
+#include "core/infi_datablock.h"
+#include "core/infi_hash.h"
+#include "core/infi_heap.h"
+#include "core/infi_merge_sort.h"
+#include "core/infi_queue.h"
+#include "core/infi_rb_tree.h"
+#include "core/infi_reserved_array.h"
+#include "core/infi_stack.h"
+#include "core/infi_string.h"
+#include "core/infi_transform_stack.h"
+#include "core/infi_vector.h"
+#include "core/infi_random.h"
+
+#include "render/infi_render_transform.h"
+#include "render/infi_gl_extensions.h"
+#include "render/infi_gl_wrapper.h"
+#include "render/infi_gl_control.h"
+#include "render/infi_canvas.h"
+#include "render/infi_texture.h"
+#include "render/infi_buffer.h"
+#include "render/infi_formatted_buffer.h"
+#include "render/infi_format.h"
+#include "render/infi_vertices.h"
+#include "render/infi_program.h"
+#include "render/infi_program_format.h"
+#include "render/infi_view_transform.h"
+#include "render/infi_standard_objects.h"
+
+#include "io/infi_load.h"
+
+#include "infi_abbr.h"
+
+#endif//__INFINITY_H__
