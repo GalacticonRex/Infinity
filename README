@@ -1,0 +1,32 @@
+INFINITY Render Engine
+
+17 Feb 2016
+-----------
+TO-DO
+!!!	key presses don't WORK
+!! 	destroy objects intelligently
+! 	handle canvas format and output format match-up
+* 	handle possibility of reading and writing from the same
+		texture in the same render pass
+* 	need to implement text namespace
+* 	transform feedback
+? 	patterns
+
+WHAT'S NEW??
+* Better control of what objects can be rendered with others
+* Pushed all GL calls to the last possible minute, to negate
+	any possibility of incorrectly ordered commands
+* Updated the keyboard/mouse API
+* No longer able to render individual vertex buffers; they
+	must be encapsulated by a vertex object
+* Cleaned up program uniforms; now able to pass in functions
+	to update every time the program is bound
+* Fixed the segfaults in the string_t class
+* Made a few adjustments to the infi_extension_t class,
+	pushed the separate methods to different classes
+* Changed the inheritance structure of a few of the core
+	classes (array_t, data_t)
+* Began process of moving away from SDL_image; started using
+	libjpeg
+* Overhauled the error system, now records an error stack
+	to make error locating more precise
