@@ -33,6 +33,7 @@ namespace render {
 		const infi_buffer_t* indices;	// element array buffer (assume uint32)
 		core::array_t<infi_formatted_buffer_t>
 							 buffers;	// an array of all the added buffers
+		core::bitfield_t	 required;	// determines if a vertex attribute needs to be filled
 		core::bitfield_t	 inuse;		// determines if a vertex attribute is in use
 		uint32				 active;	// how many attributes are active
 		

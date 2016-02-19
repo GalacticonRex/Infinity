@@ -51,15 +51,18 @@ static core::string_t __rect2dshader_rgbtohsv =
 	"	float mmin = min( min( c.r, c.g ), c.b );"
 	"	float mmax = max( max( c.r, c.g ), c.b );"
 	"	float delta = mmax - mmin;"
-	"	float h = (1 - ceil( mmax - c.r ))*(0+(c.g-c.b)/delta) +"
-	"			  (1 - ceil( mmax - c.g ))*(2+(c.g-c.b)/delta) +"
-	"			  (1 - ceil( mmax - c.b ))*(4+(c.g-c.b)/delta);"
+	"	float h;"
+	"	if ( mmax == c.r )"
+	"		h = (0+(c.g-c.b)/delta);"
+	"	if ( mmax == c.g )"
+	"		h = (2+(c.b-c.r)/delta);"
+	"	if ( mmax == c.b )"
+	"		h = (4+(c.r-c.g)/delta);"
 	"	float s = 0;"
 	"	if ( mmax != 0 )"
 	"		s = delta / mmax;"
-	"	h *= M_PI / 3;"
-	"	while ( h < 0 )"
-	"		h += M_PI * 2;"
+	"	h = mod( h, 6 );"
+	"	h /= 6;"
 	"	fragout = vec4( h, s, mmax, c.a );"
 	"}";
 	
@@ -67,19 +70,18 @@ static core::string_t __rect2dshader_hsvtorgb =
 	"#version 150\n"
 	"#define M_PI 3.1415926535897932384626433832795\n"
 	"uniform sampler2D teximage;"
+	"uniform vec3 hsv_shift = vec3(0,0,0);"
 	"in vec2 v_texcoord;"
 	"out vec4 fragout;"
 	"void main() {"
 	"	vec4 c = texture2D( teximage, v_texcoord );"
-	"	float h = c.r;"
-	"	float s = c.g;"
-	"	float v = c.b;"
+	"	float h = mod( c.r + hsv_shift.r, 1 );"
+	"	float s = clamp( c.g + hsv_shift.g,0,1 );"
+	"	float v = clamp( c.b + hsv_shift.b,0,1 );"
 	"	if ( s == 0 )"
 	"		fragout = vec4( v,v,v,c.a );"
 	"	else {"
-	"		while ( h < 0 )"
-	"			h += M_PI * 2;"
-	"		h *= 3 / M_PI;"
+	"		h *= 6;"
 	"		float fh = floor(h);"
 	"		float f = h - fh;"
 	"		float i = floor( fh/2 );"
@@ -197,9 +199,9 @@ void InfiDrawRect( core::rectf rt, infi_texture_t* tex, float32 rotation ) {
 	
 	if ( tex != NULL ) {
 		InfiRect2DShader()->uniformSampler( "teximage", tex );
-		InfiRect2DShader()->uniformf( "use", .7f );
+		InfiRect2DShader()->uniformf( "use", 1.f );
 	} else
-		InfiRect2DShader()->uniformf( "use", .7f );
+		InfiRect2DShader()->uniformf( "use", 1.f );
 	
 	InfiPushTransform();
 		InfiTranslate( rt.pos );

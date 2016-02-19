@@ -7,7 +7,7 @@
 
 namespace INFI {
 namespace core {
-	
+
 struct bitfield_t {
 
 	private:
@@ -94,6 +94,14 @@ struct bitfield_t {
 			if ( x >= _sz )
 				return;
 			_data[x/8] &= ~( 1 << ( x % 8 ) );
+		}
+		
+		void flood( uint32 first, uint32 second=0 ) {
+			if ( first < second ) {
+				
+			} else {
+				//first % 8
+			}
 		}
 		
 		void append( bool val ) {

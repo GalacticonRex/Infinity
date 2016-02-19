@@ -556,7 +556,6 @@ static void infi_control_thread() {
 			}
 			
 			else switch( ev.type ) {
-				std::cerr << "Other Event" << std::endl;
 				case SDL_WINDOWEVENT:
 					infi_handle_window_ev( ev, dt );
 					break;
@@ -961,7 +960,7 @@ static void infi_handle_window_ev( const SDL_Event& ev, float64 dt ) {
 		if( ev.key.keysym.mod & INFI_MOD_CAPS ) 	mods |= INFI_K_CAPSLOCK;
 
 static void infi_handle_key_down_ev( const SDL_Event& ev, float64 dt ) {
-	if ( WINDOW.ACTIVE != NULL ) {
+	if ( WINDOW.ACTIVE != NULL && ((int)ev.key.repeat == 0 ) ) {
 		uint32 mods = 0;
 		GET_MODS( mods )
 		WINDOW.ACTIVE->kback->push_down( ev.key.keysym.scancode, mods, dt );
