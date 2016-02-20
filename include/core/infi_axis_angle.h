@@ -6,19 +6,19 @@
 namespace INFI {
 namespace core {
 
-	struct INFI_EXPORT AxisAngle {
+	struct INFI_EXPORT axisangle_t {
 		vec3 axis;
 		float32 angle;
 		
-		AxisAngle();
-		AxisAngle(vec3,float32); // explicit dump
-		AxisAngle(float32,vec3); // ""
-		AxisAngle(vec3,vec3); // angle between two vectors
+		axisangle_t();
+		axisangle_t(vec3,float32); // explicit dump
+		axisangle_t(float32,vec3); // ""
+		axisangle_t(vec3,vec3); // angle between two vectors
 		
 		vec3 simplify();
 	};
 
-	INFI_FUNCTION( std::ostream&, operator<<, ( std::ostream&, const AxisAngle& ) );
+	INFI_FUNCTION( std::ostream&, operator<<, ( std::ostream&, const axisangle_t& ) );
 
 } }
 

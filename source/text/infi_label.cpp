@@ -82,9 +82,12 @@ namespace text {
 	}
 
 	void infi_label_t::Render( const vec2ui& frame, float64 dt ) {
+		InfiPushCamera();
 		InfiGLPushBlendMode( BlendMix() );
-		InfiDrawRect( position.xy(), buffer );
+		InfiDrawRect( rectf( position.xy(),
+					  (vec2)buffer->dimensions ), buffer );
 		InfiGLPopBlendMode();
+		InfiPopCamera();
 	}
 	
 	void InfiRedrawLabel( infi_label_t* lab ) {

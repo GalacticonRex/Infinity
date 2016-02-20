@@ -16,7 +16,7 @@ INFI_FUNCTION( void, InfiGLSendWhitespace, ( uint32 = 1 ) );
 
 // general texture functions
 INFI_FUNCTION( void, InfiGLActiveTexture, ( uint32 tex ) );
-INFI_FUNCTION( void, InfiGLDeleteTextures, ( uint32 count, uint32* objs ) );
+INFI_FUNCTION( void, InfiGLDeleteTextures, ( uint32 count, const uint32* objs ) );
 INFI_FUNCTION( void, InfiGLGenTextures, ( uint32 count, uint32* output ) );
 INFI_FUNCTION( void, InfiGLGenerateMipmap, () );
 
@@ -115,7 +115,7 @@ INFI_FUNCTION( void, InfiGLBindBufferBase, ( uint32 buf, uint32 slot, uint32 obj
 INFI_FUNCTION( void, InfiGLBufferData, ( GLenum buf, uint32 sz, const void* data, GLenum readtype ) );
 INFI_FUNCTION( void, InfiGLBufferSubData, ( GLenum buf, uint32 offset, uint32 size, const void* data ) );
 INFI_FUNCTION( void, InfiGLCopyBufferSubData, ( GLenum r, GLenum w, int32 roff, int32 woff, int32 sz ) );
-INFI_FUNCTION( void, InfiGLDeleteBuffers, ( uint32 count, uint32* objs ) );
+INFI_FUNCTION( void, InfiGLDeleteBuffers, ( uint32 count, const uint32* objs ) );
 INFI_FUNCTION( void, InfiGLGenBuffers, ( uint32 count, uint32* output ) );
 INFI_FUNCTION( void, InfiGLGetBufferSubData, ( GLenum target, int32 offset, int32 size, void* output ) );
 INFI_FUNCTION( void*, InfiGLMapBuffer, ( GLenum target, GLenum access ) );
@@ -133,7 +133,7 @@ INFI_FUNCTION( void, InfiGLBindFramebufferRead, ( uint32 obj ) );
 INFI_FUNCTION( void, InfiGLBlitFramebuffer, ( int32 srcx0, int32 srcy0, int32 srcx1, int32 srcy1, int32 dstx0, int32 dsty0, int32 dstx1, int32 dsty1, uint32 mask, GLenum filter ) );
 INFI_FUNCTION( void, InfiGLClear, ( GLenum channels ) );
 INFI_FUNCTION( void, InfiGLClearColor, ( float32 r, float32 g, float32 b, float32 a ) );
-INFI_FUNCTION( void, InfiGLDeleteFramebuffers, ( uint32 count, uint32* objs ) );
+INFI_FUNCTION( void, InfiGLDeleteFramebuffers, ( uint32 count, const uint32* objs ) );
 INFI_FUNCTION( void, InfiGLDrawBuffer, ( GLenum buf ) );
 INFI_FUNCTION( void, InfiGLDrawBuffers, ( uint32 count, GLenum* buffers ) );
 INFI_FUNCTION( void, InfiGLFramebufferTexture, ( GLenum attachment, uint32 tex, int32 level ) );
@@ -142,7 +142,7 @@ INFI_FUNCTION( void, InfiGLFramebufferTextureRead, ( GLenum attachment, uint32 t
 INFI_FUNCTION( void, InfiGLGenFramebuffers, ( uint32 count, uint32* output ) );
 
 INFI_FUNCTION( void, InfiGLBindRenderbuffer, ( uint32 obj ) );
-INFI_FUNCTION( void, InfiGLDeleteRenderbuffers, ( uint32 count, uint32* objs ) );
+INFI_FUNCTION( void, InfiGLDeleteRenderbuffers, ( uint32 count, const uint32* objs ) );
 INFI_FUNCTION( void, InfiGLFramebufferRenderbuffer, ( GLenum attachment, uint32 buffer ) );
 INFI_FUNCTION( void, InfiGLFramebufferRenderbufferDraw, ( GLenum attachment, uint32 buffer ) );
 INFI_FUNCTION( void, InfiGLFramebufferRenderbufferRead, ( GLenum attachment, uint32 buffer ) );
@@ -162,7 +162,7 @@ INFI_FUNCTION( void, InfiGLEnableVertexAttribArray, ( uint32 chan ) );
 INFI_FUNCTION( void, InfiGLVertexAttribPointer, ( uint32 index, int32 sz, GLenum type, bool normalized, uint32 stride, void* offset ) );
 
 INFI_FUNCTION( void, InfiGLBindVertexArray, ( uint32 obj ) );
-INFI_FUNCTION( void, InfiGLDeleteVertexArrays, ( uint32 count, uint32* objs ) );
+INFI_FUNCTION( void, InfiGLDeleteVertexArrays, ( uint32 count, const uint32* objs ) );
 INFI_FUNCTION( void, InfiGLGenVertexArrays, ( uint32 count, uint32* objs ) );
 
 // transform feedback functions

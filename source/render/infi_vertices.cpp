@@ -1,5 +1,6 @@
 #include "render/infi_vertices.h"
 #include "render/infi_gl_wrapper.h"
+#include "render/infi_gl_objects.h"
 #include <set>
 
 namespace INFI {
@@ -16,8 +17,7 @@ void InfiLEmptyVertexCache() {
 	
 uint32 infi_vertices_t::CreateNewHandle( infi_window_t* win ) {
 	InfiPushFunction( "infi_vertices_t.create_handle" );
-	uint32 hnd;
-	InfiGLGenVertexArrays( 1, &(hnd) );
+	uint32 hnd = InfiGLCreateVertexArray();
 	InfiPopFunction();
 	return hnd;
 }

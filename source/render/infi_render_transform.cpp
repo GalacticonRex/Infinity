@@ -58,17 +58,17 @@ namespace render {
 		transform_stack.mult( m );
 		InfiLSignalTransformChange();
 	}
-	void InfiRotate( const EulerAngles& eul ) {
+	void InfiRotate( const eulerangles_t& eul ) {
 		mat4 m = ExpandMat4( toMatrix( eul ) );
 		transform_stack.mult( m );
 		InfiLSignalTransformChange();
 	}
-	void InfiRotate( const AxisAngle& aa ) {
+	void InfiRotate( const axisangle_t& aa ) {
 		mat4 m = ExpandMat4( toMatrix( aa ) );
 		transform_stack.mult( m );
 		InfiLSignalTransformChange();
 	}
-	void InfiRotate( const Quaternion& quat ) {
+	void InfiRotate( const quaternion_t& quat ) {
 		mat4 m = ExpandMat4( toMatrix( quat ) );
 		transform_stack.mult( m );
 		InfiLSignalTransformChange();

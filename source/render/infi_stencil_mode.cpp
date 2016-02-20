@@ -14,20 +14,19 @@ void InfiLEmptyStencilModeCache() {
 	cache.clear();
 }
 
-infi_stencil_t* InfiCreateStencil() {
-	infi_stencil_t* ret = new infi_stencil_t();
-	ret->usage = 0;
-	ret->func = GL_ALWAYS;
-	ret->ref = 0;
-	ret->mask = 0;
-	ret->sfail = GL_KEEP;
-	ret->dpfail = GL_KEEP;
-	ret->dppass = GL_KEEP;
-	ret->wmask = 0;
-	
-	cache.insert( ret );
-	
-	return ret;
+infi_stencil_t::infi_stencil_t() {
+	usage = 0;
+	func = GL_ALWAYS;
+	ref = 0;
+	mask = 0;
+	sfail = GL_KEEP;
+	dpfail = GL_KEEP;
+	dppass = GL_KEEP;
+	wmask = 0;
+	cache.insert( this );
+}
+infi_stencil_t::~infi_stencil_t() {
+	cache.erase( this );
 }
 
 } }

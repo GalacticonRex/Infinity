@@ -4,7 +4,6 @@
 #include "core/infi_vector.h"
 #include "core/infi_methods.h"
 #include "render/infi_texture.h"
-#include "render/infi_object_dump.h"
 #include "render/infi_multi_context.h"
 #include "render/infi_view_transform.h"
 #include "main/infi_window.h"
@@ -23,8 +22,7 @@ namespace render {
 	typedef infi_multi_context_t<infi_window_t*,
 								uint32,
 								infi_canvas_attachment_t,
-								InfiRenderWindow,
-								infi_dump_framebuffer>
+								InfiRenderWindow>
 			ContextSwitch;
 			
 	typedef ContextSwitch::local_handle ContextHandle;

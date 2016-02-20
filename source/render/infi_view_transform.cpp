@@ -96,7 +96,7 @@ infi_projection_t* InfiCreateProjection( float32 f ) {
 	return ret;
 }
 
-infi_camera_t* InfiCreateCamera( const vec3& pos, const Quaternion& rot, float32 f ) {
+infi_camera_t* InfiCreateCamera( const vec3& pos, const quaternion_t& rot, float32 f ) {
 	infi_camera_t* ret = new infi_camera_t;
 	ret->position = pos;
 	ret->rotation = rot;

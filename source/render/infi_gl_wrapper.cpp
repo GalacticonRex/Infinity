@@ -137,7 +137,7 @@ void InfiGLBindVertexArray( uint32 obj ) {
 	glBindVertexArray( obj );
 	__GL_error1( gloutput, glBindVertexArray, obj );
 }
-void InfiGLDeleteVertexArrays( uint32 count, uint32* objs ) {
+void InfiGLDeleteVertexArrays( uint32 count, const uint32* objs ) {
 	glDeleteVertexArrays( count, objs );
 	__GL_error2( gloutput, glDeleteVertexArrays, count, objs );
 }
@@ -149,7 +149,7 @@ void InfiGLBindRenderbuffer( uint32 obj ) {
 	glBindRenderbuffer( GL_RENDERBUFFER, obj );
 	__GL_error1( gloutput, glBindRenderbuffer, obj );
 }
-void InfiGLDeleteRenderbuffers( uint32 count, uint32* objs ) {
+void InfiGLDeleteRenderbuffers( uint32 count, const uint32* objs ) {
 	glDeleteRenderbuffers( count, objs );
 	__GL_error2( gloutput, glDeleteRenderbuffers, count, objs );
 }
@@ -359,11 +359,11 @@ uint32 InfiGLCreateShader( GLenum type ) {
 	__GL_error1( gloutput, glCreateShader, infigl_enum( type ) );
 	return tmp;
 }
-void InfiGLDeleteBuffers( uint32 count, uint32* objs ) {
+void InfiGLDeleteBuffers( uint32 count, const uint32* objs ) {
 	glDeleteBuffers( count, objs );
 	__GL_error2( gloutput, glDeleteBuffers, count, objs );
 }
-void InfiGLDeleteFramebuffers( uint32 count, uint32* objs ) {
+void InfiGLDeleteFramebuffers( uint32 count, const uint32* objs ) {
 	glDeleteFramebuffers( count, objs );
 	__GL_error2( gloutput, glDeleteFramebuffers, count, objs );
 }
@@ -375,7 +375,7 @@ void InfiGLDeleteShader( uint32 shader ) {
 	glDeleteShader( shader );
 	__GL_error1( gloutput, glDeleteShader, shader );
 }
-void InfiGLDeleteTextures( uint32 count, uint32* objs ) {
+void InfiGLDeleteTextures( uint32 count, const uint32* objs ) {
 	glDeleteTextures( count, objs );
 	__GL_error2( gloutput, glDeleteTextures, count, objs );
 }

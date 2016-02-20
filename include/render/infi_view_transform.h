@@ -33,7 +33,7 @@ struct infi_projection_t : infi_view_matrix_t {
 
 struct infi_camera_t : infi_projection_t {
 	core::vec3 position;
-	core::Quaternion rotation;
+	core::quaternion_t rotation;
 	
 	core::vec3 forward();
 	core::vec3 up();
@@ -52,7 +52,7 @@ INFI_FUNCTION( infi_orthogonal_t*, InfiCreateOrthogonal, ( const core::rectf& ) 
 
 INFI_FUNCTION( infi_projection_t*, InfiCreateProjection, ( float32 = 1.22173048 ) );
 
-INFI_FUNCTION( infi_camera_t*, InfiCreateCamera, ( const core::vec3&, const core::Quaternion&, float32 = 1.22173048 ) );
+INFI_FUNCTION( infi_camera_t*, InfiCreateCamera, ( const core::vec3&, const core::quaternion_t&, float32 = 1.22173048 ) );
 
 INFI_FUNCTION( const core::mat4&, InfiGetCamera, () );
 INFI_FUNCTION( infi_view_transform_t*, InfiCurrentCamera, () );

@@ -46,6 +46,11 @@
 
 #include "io/infi_load.h"
 
+#include "text/infi_text.h"
+#include "text/infi_font.h"
+#include "text/infi_label.h"
+#include "text/infi_text_input.h"
+
 #include "infi_abbr.h"
 
 #endif//__INFINITY_H__

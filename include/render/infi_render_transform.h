@@ -18,9 +18,9 @@ namespace render {
 	INFI_FUNCTION( void, InfiTranslate, ( float32, float32 ) );
 	INFI_FUNCTION( void, InfiTranslate, ( float32, float32, float32 ) );
 	INFI_FUNCTION( void, InfiRotate, ( float32 ) );
-	INFI_FUNCTION( void, InfiRotate, ( const core::EulerAngles& ) );
-	INFI_FUNCTION( void, InfiRotate, ( const core::AxisAngle& ) );
-	INFI_FUNCTION( void, InfiRotate, ( const core::Quaternion& ) );
+	INFI_FUNCTION( void, InfiRotate, ( const core::eulerangles_t& ) );
+	INFI_FUNCTION( void, InfiRotate, ( const core::axisangle_t& ) );
+	INFI_FUNCTION( void, InfiRotate, ( const core::quaternion_t& ) );
 	INFI_FUNCTION( void, InfiScale, ( float32 ) );
 	INFI_FUNCTION( void, InfiScale, ( const core::vec2& ) );
 	INFI_FUNCTION( void, InfiScale, ( const core::vec3& ) );

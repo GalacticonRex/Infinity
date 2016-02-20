@@ -14,21 +14,19 @@ void InfiLEmptyBlendModeCache() {
 	cache.clear();
 }
 
-infi_blend_t* InfiCreateBlend() {
-	infi_blend_t* ret = new infi_blend_t();
+infi_blend_t::infi_blend_t() {
+	usage = 0;
+	srcalpha = GL_ONE;
+	srccolor = GL_ONE;
+	dstalpha = GL_ZERO;
+	dstcolor = GL_ZERO;
+	funcalpha = GL_ADD;
+	funccolor = GL_ADD;
 	
-	ret->usage = 0;
-	
-	ret->srcalpha = GL_ONE;
-	ret->srccolor = GL_ONE;
-	ret->dstalpha = GL_ZERO;
-	ret->dstcolor = GL_ZERO;
-	ret->funcalpha = GL_ADD;
-	ret->funccolor = GL_ADD;
-	
-	cache.insert( ret );
-	
-	return ret;
+	cache.insert( this );
+}
+infi_blend_t::~infi_blend_t() {
+	cache.erase( this );
 }
 
 } }

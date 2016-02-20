@@ -2,6 +2,7 @@
 #include "render/infi_render.h"
 #include "render/infi_gl_control.h"
 #include "render/infi_gl_wrapper.h"
+#include "render/infi_gl_objects.h"
 #include "render/infi_renderbuffer.h"
 #include "render/infi_texture_multisample.h"
 #include <set>
@@ -87,8 +88,7 @@ namespace render {
 	
 	uint32 infi_canvas_t::CreateNewHandle( infi_window_t* win ) {
 		InfiPushFunction( "infi_canvas_t.create_handle" );
-		uint32 hnd;
-		InfiGLGenFramebuffers( 1, &(hnd) );
+		uint32 hnd = InfiGLCreateFramebuffer();
 		InfiPopFunction();
 		return hnd;
 	}

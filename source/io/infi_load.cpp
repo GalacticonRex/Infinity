@@ -110,7 +110,7 @@ infi_texture_t* InfiLoadTexture( const string_t& fname ) {
 		
 		SDL_Surface* imgload = NULL;// = IMG_Load( str.source() );
 		if ( imgload == NULL ) {
-			InfiSendError( INFI_UNSUPPORTED_TYPE, "no file named %s", str.source() );
+			InfiSendError( INFI_UNSUPPORTED_TYPE, "file %s cannot be opened", str.source() );
 		}
 		
 		uint32 width = imgload->w,

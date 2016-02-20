@@ -12,7 +12,7 @@ namespace {
 	using namespace render;
 }
 
-/*static void debugdisplay( ostream& out, char value ) {
+static void debugdisplay( ostream& out, char value ) {
 	if ( value >= 127 )
 		out << '#';
 	else if ( value > 96 )
@@ -23,7 +23,7 @@ namespace {
 		out << '.';
 	else
 		out << ' ';
-}*/
+}
 
 static render::infi_canvas_t* __fbo;
 static FT_Library __lib;
@@ -82,27 +82,20 @@ const char* InfiGetFontName ( const char* a, INFI_fontFlags b ) {
 }
 /* KILL */
 static FT_Face load_sys_library( const char* fname, INFI_fontFlags flags, uint32 sz ) {
-	std::cerr << "    WHOA!!!!!" << flush << endl;
 	const char* sysname = InfiGetFontName( fname, flags );
 	
 	if ( sysname == NULL )
 		return NULL;
-	
-	std::cerr << "    WHOA!!!!!" << flush << endl;
-	
+			
 	ifstream istr( sysname );
 	if ( !istr.good() ) {
 		istr.close();
 		return NULL;
 	} istr.close();
 	
-	std::cerr << "    WHOA!!!!!" << flush << endl;
-	
 	FT_Face output;
 	FT_New_Face( __lib, sysname, 0, &output );
 	FT_Set_Char_Size( output, sz<<6, sz<<6, 96, 96 );
-	
-	std::cerr << "    WHOA!!!!!" << flush << endl;
 	
 	return output;
 }
@@ -118,35 +111,26 @@ void raster_callback( const int32 y,
 infi_tt_font_t* InfiCreateFont( const string_t& nname, uint32 size, INFI_fontFlags flag, uint32 out ) {
 	string_t name(nname);
 	
-	std::cerr << "WHOA!!!!!" << flush << endl;
-	
 	sized_font_handle hnd;
 	hnd.fname = name.source();
 	hnd.size = size;
 	hnd.outline = out;
 	
-	std::cerr << "WHOA!!!!!" << flush << endl;
-	
 	ftmap::iterator iter = fontnames.find( hnd );
 	
-	std::cerr << "WHOA!!!!!" << flush << endl;
-	
 	if ( iter == fontnames.end() ) {
-		
-		std::cerr << "WHOA!!!!!" << flush << endl;
 		
 		FT_Face face;
 		face = load_library( name.source(), size );
 		if ( face == NULL ) {
 			face = load_sys_library( name.source(), flag, size );
 			if ( face == NULL ) {
-				std::cerr << "FAILED" << endl;
-				InfiSendError( INFI_FILE_NOT_FOUND, "InfiCreateFont", "could not create font from %s", name.source() );
+				InfiSendError( INFI_FILE_NOT_FOUND,
+							   "could not create font from %s",
+							   name.source() );
 				return NULL;
 			}
 		}
-		
-		std::cerr << "WHOA!!!!!" << flush << endl;
 		
 		infi_tt_font_t* nf = new infi_tt_font_t;
 		InfiLInitFonts( nf );
@@ -157,7 +141,7 @@ infi_tt_font_t* InfiCreateFont( const string_t& nname, uint32 size, INFI_fontFla
 		
 		uint32 sz = size * 16;
 		nf->buffer = InfiCreateTexture( { sz, sz }, INFI_BYTE, INFI_FLOAT, INFI_111R, true );
-		InfiClearTexture( nf->buffer, {1,1,1,0} );
+		InfiClearTexture( nf->buffer, {0,0,0,0} );
 		InfiBilinearTexel( nf->buffer );
 		InfiClampTexture( nf->buffer );
 		
@@ -166,8 +150,6 @@ infi_tt_font_t* InfiCreateFont( const string_t& nname, uint32 size, INFI_fontFla
 		nf->params.gray_spans = raster_callback;
 		
 		fontnames[hnd] = nf;
-		
-		std::cerr << "WHOA!!!!!" << flush << endl;
 		
 		return nf;
 	} else
@@ -258,22 +240,22 @@ infi_character_t* infi_tt_font_t::fetch( char k ) {
 			maxdim.y = std::max( cc->after.y + 1, maxdim.y );
 			
 			int32 w = cc->after.x - cc->before.x + 1,
-				h = cc->after.y - cc->before.y + 1;
+				  h = cc->after.y - cc->before.y + 1;
 			
 			ccdim.x = w;
 			ccdim.y = h;
 			
 			gen_texture( w,h, brect, baselist, fontdata );
 			
-			/*// <---- DISPLAY TEXT -------------------------------------------->
+			// <---- DISPLAY TEXT -------------------------------------------->
 			for ( int32 y=0;y<h;y++ ) {
-				( y == cc->after.y ) ? std::cerr << ">> " : std::cerr << ".. ";
+				( y == h - cc->after.y ) ? std::cerr << ">> " : std::cerr << ".. ";
 				for ( int32 x=0;x<w;x++ ) 
 					debugdisplay( std::cerr, (uint8)fontdata[y*w+x] );
-				( y == cc->after.y ) ? std::cerr << " <<" : std::cerr << " ..";
+				( y == h - cc->after.y ) ? std::cerr << " <<" : std::cerr << " ..";
 				std::cerr << endl;
 			} std::cerr << endl << endl;
-			// <-------------------------------------------------------------->*/
+			// <-------------------------------------------------------------->
 			
 		}
 		

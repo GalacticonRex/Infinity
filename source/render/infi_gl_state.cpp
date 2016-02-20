@@ -101,6 +101,8 @@ namespace render {
 		GL_GET_ENABLED( GL_BLEND_EQUATION_ALPHA, funcalpha )
 		GL_GET_ENABLED( GL_BLEND_EQUATION_RGB, funccolor )
 		
+		ctrl->blendusage.push( 0 );
+		
 		core::vec4 fbuffer;
 		InfiGLGetFloatv( GL_BLEND_COLOR, (GLfloat*) &(fbuffer) );
 		ctrl->color.push( fbuffer );

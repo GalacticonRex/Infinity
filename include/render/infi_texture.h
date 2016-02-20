@@ -12,8 +12,6 @@ namespace INFI {
 namespace render {
 	
 INFI_FUNCTION( void, InfiLEmptyTextureCache, () );
-INFI_FUNCTION( void, InfiLInitTextureClear, () );
-INFI_FUNCTION( void, InfiLQuitTextureClear, () );
 
 /*
 	The texture channel enumerator allows for implicit
@@ -220,6 +218,8 @@ INFI_FUNCTION( void, InfiRepeatTexture, ( infi_texture_t* ) );
 INFI_FUNCTION( void, InfiClampTexture, ( infi_texture_t* ) );
 
 INFI_FUNCTION( void, InfiSetTextureSwizzle, ( infi_texture_t*, INFI_channels ) );
+
+INFI_FUNCTION( void, InfiDebugTexture, ( infi_texture_t*, std::ostream& = std::cerr ) );
 
 // low level accessors
 INFI_FUNCTION( void, InfiLSetTextureData, ( infi_texture_t*, const core::indexable_t<uint8>& ) );

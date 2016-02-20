@@ -6,23 +6,23 @@
 namespace INFI {
 namespace core {
 
-	struct INFI_EXPORT EulerAngles {
+	struct INFI_EXPORT eulerangles_t {
 		float32 yaw,pitch,roll;
 		
 		// Sampled Z AXIS, Y AXIS, X AXIS in constructors
 		// Resolved Z AXIS MATRIX * Y AXIS MATRIX * X AXIS MATRIX
-		EulerAngles();
-		EulerAngles( float32,	  // Rotation about Z
+		eulerangles_t();
+		eulerangles_t( float32,	  // Rotation about Z
 			   float32,	  // Rotation about Y
 			   float32 );	// Rotation about X
-		EulerAngles( vec2, float32 );
-		EulerAngles( float32, vec2 );
-		EulerAngles( vec3 );
+		eulerangles_t( vec2, float32 );
+		eulerangles_t( float32, vec2 );
+		eulerangles_t( vec3 );
 		
-		EulerAngles operator-();
+		eulerangles_t operator-();
 	};
 
-	std::ostream& operator<< ( std::ostream&, const EulerAngles& );
+	std::ostream& operator<< ( std::ostream&, const eulerangles_t& );
 
 } }
 

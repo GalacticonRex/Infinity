@@ -35,6 +35,8 @@ INFI_FUNCTION( uint32, InfiWindowCount, () );
 //	  included for pre-window rendering
 INFI_FUNCTION( uint32, InfiContextCount, () );
 
+INFI_FUNCTION( SDL_GLContext, InfiCurrentContext, () );
+
 INFI_FUNCTION( void, InfiQuit, () );
 
 }

@@ -131,7 +131,7 @@ mat2 toMatrix(float32 ang) {
 	return CreateMatrix( c,-s,s,c );
 }
 
-mat3 toMatrix(const EulerAngles& n)
+mat3 toMatrix(const eulerangles_t& n)
 {
 	float32 sr = sin(n.roll),sp = sin(n.pitch),sy = sin(n.yaw),
 			   cr = cos(n.roll),cp = cos(n.pitch),cy = cos(n.yaw);
@@ -140,7 +140,7 @@ mat3 toMatrix(const EulerAngles& n)
 						  -cp*sy, -sr*sp*sy + cr*cy,  cr*sp*sy + cy*sr,
 						   sp,	-cp*sr,			 cr*cp );
 }
-mat3 toMatrix(const AxisAngle& n)
+mat3 toMatrix(const axisangle_t& n)
 {
 	float32 c = cos(n.angle), s = sin(n.angle), t = 1. - c,
 			   x = n.axis.x, y = n.axis.y, z = n.axis.z;
@@ -148,14 +148,14 @@ mat3 toMatrix(const AxisAngle& n)
 						  t * x*y - s * z, c + t * y*y, t * y*z + s * x,
 						  t * x*z + s * y, t * y*z - s * x, c + t * z*z );
 }
-mat3 toMatrix(const Quaternion& q)
+mat3 toMatrix(const quaternion_t& q)
 {
 	return CreateMatrix( 1 - 2*q.j*q.j - 2*q.k*q.k,	2*q.i*q.j + 2*q.k*q.w,	  2*q.i*q.k - 2*q.j*q.w,
 						  2*q.i*q.j - 2*q.k*q.w,		1 - 2*q.i*q.i - 2*q.k*q.k,  2*q.j*q.k + 2*q.i*q.w,
 						  2*q.i*q.k + 2*q.j*q.w,		2*q.j*q.k - 2*q.i*q.w,	  1 - 2*q.i*q.i - 2*q.j*q.j );
 }
 
-EulerAngles toEuler(const AxisAngle& n)
+eulerangles_t toEuler(const axisangle_t& n)
 {
 	float32 s = sin(n.angle), c = cos(n.angle), t = 1.-c;
 	float32 head, atti, bank;
@@ -178,9 +178,9 @@ EulerAngles toEuler(const AxisAngle& n)
 		atti = asin(n.axis.x*n.axis.z*t + n.axis.y*s);
 		bank = atan2(n.axis.z*s - n.axis.x*n.axis.y*t, 1. - (n.axis.z*n.axis.z + n.axis.y*n.axis.y)*t);
 	}
-	return EulerAngles( bank,atti,head );
+	return eulerangles_t( bank,atti,head );
 }
-EulerAngles toEuler(const mat3& n)
+eulerangles_t toEuler(const mat3& n)
 {
 	float32 yaw = 0,pitch = 0,roll = 0;
 	if ( n.data[2] > 0.999999 )
@@ -201,10 +201,10 @@ EulerAngles toEuler(const mat3& n)
 		pitch = asin( n.data[6] );
 		roll = atan2( -n.data[7], n.data[8] );
 	}
-	return EulerAngles( yaw,pitch,roll );
+	return eulerangles_t( yaw,pitch,roll );
 }
 
-EulerAngles toEuler(const Quaternion& q)
+eulerangles_t toEuler(const quaternion_t& q)
 {
 	float32 head = 0,atti = 0,bank = 0;
 	
@@ -225,10 +225,10 @@ EulerAngles toEuler(const Quaternion& q)
 		head = atan2( 2*q.j*q.w - 2*q.i*q.k, 1 - 2*q.j*q.j - 2*q.k*q.k );
 		bank = atan2( 2*q.i*q.w - 2*q.j*q.k, 1 - 2*q.i*q.i - 2*q.k*q.k );
 	}
-	return EulerAngles( bank,atti,head );
+	return eulerangles_t( bank,atti,head );
 }
 
-AxisAngle toAxisAngle(const EulerAngles& n)
+axisangle_t toAxisAngle(const eulerangles_t& n)
 {
 	float32 s1=sin(n.yaw/2),s2=sin(n.pitch/2),s3=sin(n.roll/2),
 			   c1=cos(n.yaw/2),c2=cos(n.pitch/2),c3=cos(n.roll/2);
@@ -238,23 +238,23 @@ AxisAngle toAxisAngle(const EulerAngles& n)
 			c1*s2*c3 - s1*c2*s3,
 			s1*c2*c3 + c1*s2*s3 );
 	
-	if ( Length(v) < 0.0000001 ) return AxisAngle();
-	return AxisAngle( a,Normalize( v ) );
+	if ( Length(v) < 0.0000001 ) return axisangle_t();
+	return axisangle_t( a,Normalize( v ) );
 }
-AxisAngle toAxisAngle(const mat3& n)
+axisangle_t toAxisAngle(const mat3& n)
 {
 	return toAxisAngle( toEuler(n) );
 }
-AxisAngle toAxisAngle(const Quaternion& q) {
+axisangle_t toAxisAngle(const quaternion_t& q) {
 	if ( q.w == 1 ) {
-		return AxisAngle( vec3(1,0,0),0 );
+		return axisangle_t( vec3(1,0,0),0 );
 	} else {
 		float32 s = sqrt( 1 - q.w * q.w );
-		return AxisAngle( vec3(q.i/s,q.j/s,q.k/s),2 * acos( q.w ) );
+		return axisangle_t( vec3(q.i/s,q.j/s,q.k/s),2 * acos( q.w ) );
 	}
 }
 
-Quaternion toQuaternion(const EulerAngles& n)
+quaternion_t toQuaternion(const eulerangles_t& n)
 {
 	float32 s1=sin(n.yaw/2),s2=sin(n.pitch/2),s3=sin(n.roll/2),
 		  c1=cos(n.yaw/2),c2=cos(n.pitch/2),c3=cos(n.roll/2);
@@ -266,15 +266,15 @@ Quaternion toQuaternion(const EulerAngles& n)
 							  c1*s2*c3 - s1*c2*s3,
 							  s1*c2*c3 + c1*s2*s3 ) ) * s;
 					   
-	return Quaternion( v.x,v.y,v.z,i );
+	return quaternion_t( v.x,v.y,v.z,i );
 }
-Quaternion toQuaternion(const AxisAngle& aa)
+quaternion_t toQuaternion(const axisangle_t& aa)
 {
 	float32 s = sin( aa.angle/2. );
 	vec3 tmp = aa.axis * s;
-	return Quaternion( tmp.x, tmp.y, tmp.z, cos( aa.angle/2. ) );
+	return quaternion_t( tmp.x, tmp.y, tmp.z, cos( aa.angle/2. ) );
 }
-Quaternion toQuaternion(const mat3& mat)
+quaternion_t toQuaternion(const mat3& mat)
 {
 	return toQuaternion( toEuler( mat ) );
 }

@@ -1,6 +1,7 @@
 #ifndef __INFI_OPENGL_CONTROL_H__
 #define __INFI_OPENGL_CONTROL_H__
 
+#include "main/infi_structs.h"
 #include "render/infi_render_structs.h"
 #include "render/infi_blend_mode.h"
 #include "render/infi_stencil_mode.h"
@@ -9,6 +10,9 @@
 
 namespace INFI {
 namespace render {
+	
+	INFI_FUNCTION( void, InfiGLPushContext, ( infi_window_t* ) );
+	INFI_FUNCTION( void, InfiGLPopContext, () );
 	
 	INFI_FUNCTION( const infi_gl_state_t&, InfiGLState, () );
 	

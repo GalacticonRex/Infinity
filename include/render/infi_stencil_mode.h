@@ -26,9 +26,10 @@ struct infi_stencil_t {
 	GLenum	dpfail;	// | 
 	GLenum	dppass;	// | 
 	uint32	wmask;	// | group 3
+	
+	infi_stencil_t();
+	~infi_stencil_t();
 };
-
-INFI_FUNCTION( infi_stencil_t*, InfiCreateStencil, () );
 
 } }
 

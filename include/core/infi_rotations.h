@@ -9,14 +9,18 @@
 
 namespace INFI {
 namespace core {
+	
+	struct rotation_t {
+		
+	};
 
 	INFI_FUNCTION( vec2, Rotate, (vec2,float32) );
 	INFI_FUNCTION( vec2, Rotate, (vec2,mat2) );
 
 	INFI_FUNCTION( vec3, Rotate, (vec3,mat3) );
-	INFI_FUNCTION( vec3, Rotate, (vec3,EulerAngles) );
-	INFI_FUNCTION( vec3, Rotate, (vec3,AxisAngle) );
-	INFI_FUNCTION( vec3, Rotate, (vec3,Quaternion) );
+	INFI_FUNCTION( vec3, Rotate, (vec3,eulerangles_t) );
+	INFI_FUNCTION( vec3, Rotate, (vec3,axisangle_t) );
+	INFI_FUNCTION( vec3, Rotate, (vec3,quaternion_t) );
 
 } }
 

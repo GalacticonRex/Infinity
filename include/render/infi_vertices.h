@@ -22,8 +22,7 @@ namespace render {
 	typedef infi_multi_context_t<infi_window_t*,
 								uint32,
 								infi_vertex_binding_t,
-								InfiRenderWindow,
-								infi_dump_vertex_array>
+								InfiRenderWindow>
 			VertexSwitch;
 	typedef VertexSwitch::local_handle VertexHandle;
 	

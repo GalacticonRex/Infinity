@@ -8,7 +8,6 @@ namespace INFI {
 namespace render {
 	
 	struct infi_storage_t {
-		
 		infi_storage_t();
 		infi_storage_t(const infi_storage_t&);
 		virtual ~infi_storage_t() { ; }

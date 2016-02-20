@@ -1,6 +1,6 @@
 #include "render/infi_format.h"
 #include "render/infi_gl_wrapper.h"
-
+#include <set>
 
 namespace INFI {
 namespace render {

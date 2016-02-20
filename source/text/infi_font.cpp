@@ -79,6 +79,9 @@ namespace text {
 			pen.x += cc->advance.x + met->spacing;
 		}
 		
+		prog->uniform2f( "texture_shift", vec2(1,1) );
+		prog->uniform2f( "texture_scale", vec2(1,1) );
+		
 		InfiPopVertices();
 		InfiPopProgram();
 		InfiPopCamera();

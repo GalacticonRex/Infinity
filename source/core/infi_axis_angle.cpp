@@ -7,19 +7,19 @@ namespace {
 	using namespace std;
 }
 
-AxisAngle::AxisAngle() {
+axisangle_t::axisangle_t() {
 	axis = vec3(1,0,0);
 	angle = 0;
 }
-AxisAngle::AxisAngle(vec3 v,float32 n) {
+axisangle_t::axisangle_t(vec3 v,float32 n) {
 	axis = Normalize(v);
 	angle = n;
 }
-AxisAngle::AxisAngle(float32 n,vec3 v) {
+axisangle_t::axisangle_t(float32 n,vec3 v) {
 	axis = Normalize(v);
 	angle = n;
 }
-AxisAngle::AxisAngle(vec3 a,vec3 b)
+axisangle_t::axisangle_t(vec3 a,vec3 b)
 {
 	if ( a == b ) {
 		axis = vec3(1,0,0);
@@ -30,9 +30,9 @@ AxisAngle::AxisAngle(vec3 a,vec3 b)
 	}
 }
 
-vec3 AxisAngle::simplify() { return axis * angle; }
+vec3 axisangle_t::simplify() { return axis * angle; }
 
-ostream& operator<< ( ostream& out, const AxisAngle& aa ) {
+ostream& operator<< ( ostream& out, const axisangle_t& aa ) {
 	out << "axis" << aa.axis << " | angle<" << aa.angle << ">";
 	return out;
 }

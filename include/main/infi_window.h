@@ -18,7 +18,6 @@
 #include "main/infi_renderable.h"
 
 #include "render/infi_view_transform.h"
-#include "render/infi_object_dump.h"
 
 namespace INFI {
 	
@@ -123,7 +122,6 @@ namespace INFI {
 		
 		SDL_Window*							sdl;
 		SDL_GLContext						context;
-		render::infi_object_dump_t*			objdump;
 		
 		// extensions
 		uint32 extcount;

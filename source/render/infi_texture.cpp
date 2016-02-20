@@ -2,6 +2,7 @@
 #include "core/infi_methods.h"
 #include "core/infi_stack.h"
 #include "render/infi_texture.h"
+#include "render/infi_canvas.h"
 #include "render/infi_gl_wrapper.h"
 #include "render/infi_gl_control.h"
 #include "render/infi_render.h"
@@ -15,13 +16,7 @@ namespace {
 	using namespace core;
 }
 
-static GLuint texclearfbo;
-void InfiLInitTextureClear() {
-	InfiGLGenFramebuffers( 1, &texclearfbo );
-}
-void InfiLQuitTextureClear() {
-	InfiGLDeleteFramebuffers( 1, &texclearfbo );
-}
+static infi_canvas_t cv;
 
 struct infi_texture_entry_t {
 	infi_texture_t* tex;
@@ -32,11 +27,8 @@ static std::set<infi_texture_t*> cache;
 
 void InfiLEmptyTextureCache() {
 	auto iter = cache.begin();
-	for ( ;iter!=cache.end();++iter ) {
-		cerr << "--- Begin Texture Cache ---" << endl;
+	for ( ;iter!=cache.end();++iter )
 		InfiDestroyTexture( *iter );
-		cerr << "--- Finish Texture Cache ---" << endl;
-	}
 	cache.clear();
 }
 
@@ -380,6 +372,7 @@ infi_texture_t* InfiCreateTexture( const vec2ui& dim,
 
 void InfiDestroyTexture( infi_texture_t* tex ) {
 	delete tex;
+	cache.erase( tex );
 }
 
 infi_texture_t* InfiCopyTexture( const infi_texture_t* src ) {
@@ -428,6 +421,9 @@ infi_texture_t* InfiCopyTexture( const infi_texture_t* src ) {
 	}
 	
 	InfiGLPopTexture();
+	
+	cache.insert( ntex );
+	
 	InfiPopFunction();
 	return ntex;
 }
@@ -631,7 +627,7 @@ void InfiSetTextureSwizzle( infi_texture_t* tex, INFI_channels chan ) {
 
 void InfiClearTexture( infi_texture_t* tex ) {	
 	if ( GL.framebuffer.obj() ) {
-		InfiGLPushFramebuffer( texclearfbo );
+		InfiGLPushFramebuffer( cv.handle() );
 		InfiGLFramebufferTexture( GL_COLOR_ATTACHMENT0, tex->handle, 0 );
 		InfiGLClearColor( 0,0,0,0 );
 		InfiGLClear( GL_COLOR_BUFFER_BIT );
@@ -653,7 +649,7 @@ void InfiClearTexture( infi_texture_t* tex ) {
 
 void InfiClearTexture( infi_texture_t* tex, const vec4& col ) {	
 	if ( GL.framebuffer.obj() ) {
-		InfiGLPushFramebuffer( texclearfbo );
+		InfiGLPushFramebuffer( cv.handle() );
 		InfiGLFramebufferTexture( GL_COLOR_ATTACHMENT0, tex->handle, 0 );
 		InfiGLClearColor( col.r, col.g, col.b, col.a );
 		InfiGLClear( GL_COLOR_BUFFER_BIT );
@@ -672,6 +668,36 @@ void InfiClearTexture( infi_texture_t* tex, const vec4& col ) {
 	if ( tex->mipmap != 1 )
 		InfiGLGenerateMipmap();
 }
+
+static void debugdisplay( ostream& out, char value ) {
+	if ( value >= 127 )
+		out << '#';
+	else if ( value > 96 )
+		out << '=';
+	else if ( value > 64 )
+		out << '-';
+	else if ( value > 32 )
+		out << '.';
+	else
+		out << ' ';
+}
+void InfiDebugTexture( infi_texture_t* tex, std::ostream& output ) {
+	data_t<uint8> datam;
+	InfiGetData( tex, datam );
+	
+	for ( uint32 ch=0;ch<tex->channels();++ch ) {
+		for ( uint32 i=0;i<tex->height();++i ) {
+			for ( uint32 j=0;j<tex->width();++j ) {
+				debugdisplay( output,
+							  datam[ch+j*tex->channels()+i*tex->rowlen] );
+			}
+			output << std::endl;
+		}
+		output << "----------------------------------" << std::endl;
+	}
+}
+
+
 
 // +-------------------------------------------------------------------------------------------------------------------------------------------
 // | Static methods

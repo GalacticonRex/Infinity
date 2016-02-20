@@ -37,7 +37,7 @@ static core::string_t __rect2dshader_fragment =
 	"out vec4 fragout;"
 	"void main() {"
 	"	fragout = color*(use*texture2D(teximage,v_texcoord)+"
-	"					(1-use)*vec4(1,1,1,1));"
+	"					(1-use)*vec4(1,1,1,1));	"
 	"}";
 	
 static core::string_t __rect2dshader_rgbtohsv =
@@ -119,6 +119,9 @@ static core::string_t __rect2dshader_hsvblend =
 static void InfiLInitVertexFormats();
 static void InfiLInitBlendModes();
 
+static void InfiLQuitVertexFormats();
+static void InfiLQuitBlendModes();
+
 void InfiLInitObjects() {
 	InfiPushFunction( "Initialize Standard Objects" ); 
 	InfiLInitVertexFormats();
@@ -169,10 +172,14 @@ void InfiLInitObjects() {
 	InfiPopFunction();
 }
 void InfiLQuitObjects() {
+	InfiLQuitVertexFormats();
+	InfiLQuitBlendModes();
+	
 	delete __rect2ddata;
 	InfiDestroyProgram( __rect2dshader );
 	InfiDestroyProgram( __hsvtorgb );
 	InfiDestroyProgram( __rgbtohsv );
+	InfiDestroyProgram( __hsvblend );
 	InfiDestroyVertices( __rect2dverts );
 }
 
@@ -205,10 +212,12 @@ void InfiDrawRect( core::rectf rt, infi_texture_t* tex, float32 rotation ) {
 	
 	InfiPushTransform();
 		InfiTranslate( rt.pos );
-		InfiScale( rt.dim );
-		if ( rotation != 0.f )
+		if ( rotation != 0.f ) {
+			InfiTranslate( rt.dim/2 );
 			InfiRotate( rotation );
-		InfiTranslate( -0.5, -0.5 );
+			InfiTranslate( -rt.dim/2 );
+		}
+		InfiScale( rt.dim );
 		InfiDraw();
 	InfiPopTransform();
 	
@@ -356,6 +365,32 @@ static void InfiLInitVertexFormats() {
 								"Texture", INFI_FLOAT, 4,
 								"Normal", INFI_FLOAT, 3 );
 }
+static void InfiLQuitVertexFormats() {
+	delete __Position2;
+	delete __Position3;
+	delete __Position4;
+	delete __Pos2Tex2;
+	delete __Pos2Tex3;
+	delete __Pos2Tex4;
+	delete __Pos3Tex2;
+	delete __Pos3Tex3;
+	delete __Pos3Tex4;
+	delete __Pos4Tex2;
+	delete __Pos4Tex3;
+	delete __Pos4Tex4;
+	delete __Position2Norm;
+	delete __Position3Norm;
+	delete __Position4Norm;
+	delete __Pos2Tex2Norm;
+	delete __Pos2Tex3Norm;
+	delete __Pos2Tex4Norm;
+	delete __Pos3Tex2Norm;
+	delete __Pos3Tex3Norm;
+	delete __Pos3Tex4Norm;
+	delete __Pos4Tex2Norm;
+	delete __Pos4Tex3Norm;
+	delete __Pos4Tex4Norm;
+}
 
 #define GET_BLEND( name ) \
 		static infi_blend_t* __ ## name = NULL; \
@@ -371,37 +406,45 @@ GET_BLEND( BlendAdd )
 GET_BLEND( BlendText )
 
 static void InfiLInitBlendModes() {
-	__BlendMix = InfiCreateBlend();
+	__BlendMix = new infi_blend_t;
 		__BlendMix->usage |= INFI_BLEND_FUNCTION;
 		__BlendMix->srcalpha = GL_SRC_ALPHA;
 		__BlendMix->dstalpha = GL_ONE_MINUS_SRC_ALPHA;
 		
-	__BlendMixAlphaOnly = InfiCreateBlend();
-		__BlendMixAlphaOnly->usage |= INFI_BLEND_FUNCTION_SEP;
+	__BlendMixAlphaOnly = new infi_blend_t;
+		__BlendMixAlphaOnly->usage |= INFI_BLEND_FUNCTION | INFI_BLEND_FUNCTION_SEP;
 		__BlendMixAlphaOnly->srcalpha = GL_SRC_ALPHA;
 		__BlendMixAlphaOnly->dstalpha = GL_ONE_MINUS_SRC_ALPHA;
 		__BlendMixAlphaOnly->srccolor = GL_ONE;
 		__BlendMixAlphaOnly->dstcolor = GL_ONE;
 		
-	__BlendMixWeighted = InfiCreateBlend();
+	__BlendMixWeighted = new infi_blend_t;
 		__BlendMixWeighted->usage |= INFI_BLEND_FUNCTION;
 		__BlendMixWeighted->srcalpha = GL_ONE;
 		__BlendMixWeighted->dstalpha = GL_ONE_MINUS_SRC_ALPHA;
 		
-	__BlendExact = InfiCreateBlend();
+	__BlendExact = new infi_blend_t;
 		__BlendExact->usage |= INFI_BLEND_FUNCTION;
 		__BlendExact->srcalpha = GL_ONE;
 		__BlendExact->dstalpha = GL_ZERO;
 		
-	__BlendAdd = InfiCreateBlend();
+	__BlendAdd = new infi_blend_t;
 		__BlendAdd->usage |= INFI_BLEND_FUNCTION;
 		__BlendAdd->srcalpha = GL_SRC_ALPHA;
 		__BlendAdd->dstalpha = GL_DST_ALPHA;
 		
-	__BlendText = InfiCreateBlend();
+	__BlendText = new infi_blend_t;
 		__BlendText->usage |= INFI_BLEND_FUNCTION;
 		__BlendText->srcalpha = GL_ONE_MINUS_DST_ALPHA;
 		__BlendText->dstalpha = GL_DST_ALPHA;
+}
+static void InfiLQuitBlendModes() {
+	delete __BlendMix;
+	delete __BlendMixAlphaOnly;
+	delete __BlendMixWeighted;
+	delete __BlendExact;
+	delete __BlendAdd;
+	delete __BlendText;
 }
 
 } }

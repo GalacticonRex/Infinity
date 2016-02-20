@@ -24,7 +24,7 @@ namespace render {
 	
 	void InfiLEmptyGLStateCache() {
 		for ( uint32 i=0;i<glstates.size();++i )
-			delete[] glstates[i];
+			delete glstates[i];
 		glstates.clear();
 		inuse.clear();
 	}
@@ -294,7 +294,6 @@ namespace render {
 	#define POP_STATE_VALUE( fname, stack ) \
 			if ( glstates[current_state]->stack.size() == 1 ) \
 				InfiSendError( INFI_UNDERFLOW_ERROR, \
-							   #fname, \
 							   "GL attribute is at its base value" ); \
 			glstates[current_state]->stack.pop();
 			

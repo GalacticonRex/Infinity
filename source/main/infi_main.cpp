@@ -14,6 +14,7 @@
 #include "render/infi_gl_extensions.h"
 #include "render/infi_gl_wrapper.h"
 #include "render/infi_gl_control.h"
+#include "render/infi_gl_objects.h"
 #include "render/infi_texture.h"
 #include "render/infi_format.h"
 #include "render/infi_render.h"
@@ -87,6 +88,7 @@ struct {
 	bool 				GLenabled = false;
 	SDL_Window* 		window = NULL;
 	SDL_GLContext 		context = 0;
+	uint32				glstate = (uint32) -1;
 	
 	uint32 window_count = 0;
 	uint32 context_count = 0;
@@ -102,6 +104,8 @@ struct {
 	
 	SDL_mutex* create = NULL;
 	SDL_mutex* destroy = NULL;
+	
+	core::stack_t<infi_window_t*> current_window;
 
 	// this queue is for windows that need to be initialized
 	core::queue_t<infi_window_queue_object*> needs_window;
@@ -116,8 +120,6 @@ struct {
 				 prioritize_window> displays;
 	
 	core::map_t<uint32,infi_window_t*> winids;
-	
-	render::infi_object_dump_t objdump;
 	
 } WINDOW;
 
@@ -204,6 +206,9 @@ infi_window_t* InfiRenderWindow() {
 }
 infi_window_t* InfiActiveWindow() {
 	return WINDOW.ACTIVE;
+}
+SDL_GLContext InfiCurrentContext() {
+	return ( WINDOW.RENDER ) ? WINDOW.RENDER->context : WINDOW.context;
 }
 
 uint32 InfiHookControl( INFI_ControlHook hk, void* ptr ) {
@@ -389,6 +394,9 @@ static void infi_initialize_states() {
 	INFI_SIGNAL_CREATE = 0;
 	INFI_SIGNAL_DESTROY = 0;
 	INFI_SIGNAL_TERMINATE = 0;
+	
+	WINDOW.current_window.clear();
+	WINDOW.current_window.push( NULL );
 }
 
 
@@ -444,9 +452,7 @@ static void infi_quit_control() {
 	SDL_DestroyMutex( WINDOW.create );
 	SDL_DestroyMutex( WINDOW.destroy );
 	SDL_DestroyWindow( WINDOW.window );
-	std::cerr << "????" << std::endl;
 	SDL_Quit();
-	std::cerr << "????" << std::endl;
 }
 
 
@@ -458,35 +464,31 @@ static void infi_initialize_render() {
 	render::InfiGLUpdateInfo();
 		
 	WINDOW.context_count = 1;
-	uint32 temp = render::InfiGLCreateState();
-	render::InfiGLChangeState( temp );
+	WINDOW.glstate = render::InfiGLCreateState();
+	render::InfiGLChangeState( WINDOW.glstate );
 	
 	render::InfiLInitRender();
 	render::InfiLInitObjects();
-	render::InfiLInitTextureClear();
 	text::InfiLInitText();
 	InfiPopFunction();
 }
 
 static int32 infi_quit_render() {
 	InfiPushFunction( "Quit Render" );
-	
-	SDL_GL_MakeCurrent( WINDOW.window, WINDOW.context );
-	render::InfiGLSendMessage( "GL Context Change" );
-	WINDOW.RENDER = NULL;
 	int32 ret = infi_run_quit();
 	
-	render::InfiLQuitRender();
-	//render::InfiLQuitObjects();
-	render::InfiLQuitTextureClear();
 	text::InfiLQuitText();
+	render::InfiLQuitObjects();
 	
-	WINDOW.objdump.dump();
+	render::InfiGLDestroyContextObjects( WINDOW.context );
+	
+	render::InfiLQuitRender();
+	
+	render::InfiGLFreeState( WINDOW.glstate );
+	
 	WINDOW.GLenabled = false;
 	SDL_GL_DeleteContext( WINDOW.context );
 	SDL_PushEvent( &SIGNAL.terminate );
-	
-	std::cerr << "FINISHED ENDING" << std::endl;
 	
 	InfiPopFunction();
 	
@@ -590,8 +592,6 @@ static void infi_control_thread() {
 		GLOBAL.control_running = false;
 		
 	}
-	
-	std::cerr << "WAH" << std::endl;
 }
 static int32 infi_render_thread( void* data ) {
 	InfiPushFunction( "Window Component" );
@@ -733,10 +733,7 @@ static void infi_win_pipeline( infi_window_t* win ) {
 }
 static void infi_win_render( infi_window_t* win ) {
 	InfiPushFunction( "Render" );
-	SDL_GL_MakeCurrent( win->sdl, win->context );
-	render::InfiGLSendMessage( "GL Context Change" );
-	WINDOW.RENDER = win;
-	
+	InfiGLPushContext( win );
 	render::InfiGLChangeState( win->glstate );
 	
 	if ( win->flags & INFI_WINDOW_CLEAR_ON_REFRESH ) {
@@ -757,19 +754,19 @@ static void infi_win_render( infi_window_t* win ) {
 	}
 	
 	SDL_GL_SwapWindow( win->sdl );
+	render::InfiGLPopContext();
 	InfiPopFunction();
 }
 
 static void infi_enable_gl() {
 	InfiPushFunction( "Enable OpenGL" );
 	
+	render::InfiGLEnable( GL_BLEND );
 	render::InfiGLEnable( GL_TEXTURE_2D );
 	render::InfiGLEnable( GL_DEPTH_TEST );
 	render::InfiGLEnable( GL_STENCIL_TEST );
 	render::InfiGLEnable( GL_CULL_FACE );
 	render::InfiGLDepthFunc( GL_LEQUAL );
-	
-	render::InfiGLClearColor(0.f, 0.f, 0.f, 1.f);
 	render::InfiGLShadeModel( GL_SMOOTH );
 	
 	WINDOW.GLinitialized = true;
@@ -824,15 +821,14 @@ static void infi_gen_window_render() {
 		infi_window_t* nwin = nobj->win;
 		
 		nwin->context = SDL_GL_CreateContext( nwin->sdl );
-		nwin->objdump = new render::infi_object_dump_t;
 		
-		SDL_GL_MakeCurrent( nwin->sdl, nwin->context );
-		render::InfiGLSendMessage( "GL Context Change" );
-		WINDOW.RENDER = nwin;
+		render::InfiGLPushContext( nwin );
 		
 		nwin->glstate = render::InfiGLCreateState();
 		render::InfiGLChangeState( nwin->glstate );
 		infi_enable_gl();
+		
+		render::InfiGLPopContext();
 		
 		WINDOW.context_count ++ ;
 		WINDOW.needs_context.pop();
@@ -860,8 +856,6 @@ static void infi_del_window_control() {
 	
 	SDL_DestroyWindow( win->sdl );
 	
-	delete win->objdump;
-	
 	delete win->kfront;
 	delete win->kback;
 	delete win->mfront;
@@ -882,12 +876,12 @@ static void infi_del_window_render( infi_window_t* win ) {
 	WINDOW.winids.erase( win->id );
 	-- WINDOW.window_count;
 	
-	SDL_GL_MakeCurrent( win->sdl, win->context );
-	render::InfiGLSendMessage( "GL Context Change" );
-	WINDOW.RENDER = win;
+	render::InfiGLPushContext( win );
 	
-	std::cerr << "DUMPING!"<< std::endl;
-	win->objdump->dump();
+	// do delete stuff here
+	render::InfiGLDestroyContextObjects( win->context );
+	
+	render::InfiGLPopContext();
 	
 	SDL_GL_DeleteContext( win->context );
 	render::InfiGLFreeState( win->glstate );
@@ -997,22 +991,33 @@ float64 InfiGetProgramTime() {
 }
 
 namespace render {
-	void infi_dump_vertex_array( infi_window_t* win, uint32 va ) {
-		std::cerr << "DUMP VA " << win << std::endl;
-		if ( win == NULL ) {
-			WINDOW.objdump.add_vertex_array( va );
-		} else {
-			std::cerr << win->name << std::endl;
-			win->objdump->add_vertex_array( va );
-		}
+	static void set_context( infi_window_t* win ) {
+		render::InfiGLSendMessage( (win) ? win->name.source() : "Default Context" );
+		if ( win == NULL )
+			SDL_GL_MakeCurrent( WINDOW.window, WINDOW.context );
+		else
+			SDL_GL_MakeCurrent( win->sdl, win->context );
+		WINDOW.RENDER = win;
 	}
-	void infi_dump_framebuffer( infi_window_t* win, uint32 fb ) {
-		std::cerr << "DUMP FB " << win << std::endl;
-		if ( win == NULL ) {
-			WINDOW.objdump.add_framebuffer( fb );
-		} else {
-			win->objdump->add_framebuffer( fb );
-		}
+	void InfiGLPushContext( infi_window_t* win ) {
+		infi_window_t* old = *(WINDOW.current_window);
+		WINDOW.current_window.push( win );
+		if ( win == old )
+			return;
+		set_context( win );
+	}
+	void InfiGLPopContext() {
+		InfiPushFunction( "InfiGLPopContext" );
+		if ( WINDOW.current_window.size() == 1 )
+			InfiSendError( INFI_UNDERFLOW_ERROR,
+						   "no context on stack to pop" );
+		infi_window_t* old = *(WINDOW.current_window);
+		WINDOW.current_window.pop();
+		infi_window_t* win = *(WINDOW.current_window);
+		if ( win == old )
+			return;
+		set_context( win );
+		InfiPopFunction();
 	}
 }
 

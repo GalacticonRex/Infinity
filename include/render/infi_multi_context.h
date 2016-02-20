@@ -7,11 +7,10 @@
 namespace INFI {
 namespace render {
 	
-	template<typename ContextType,			// how is a unique context represented
-			 typename HandleType,			// what is bound to the context
-			 typename ObjectType,			// how is a single object represented
-			 ContextType (*CurrentContext)(),// what is the current handle?
-			 void (*DestroyHandle)( ContextType, HandleType ) = NULL>
+	template<typename ContextType,			  // how is a unique context represented
+			 typename HandleType,			  // what is bound to the context
+			 typename ObjectType,			  // how is a single object represented
+			 ContextType (*CurrentContext)()> // what is the current handle?
 	struct infi_multi_context_t {
 		
 		// object bound to a unique context
@@ -100,18 +99,21 @@ namespace render {
 				current( 0 ),
 				objcount( copy.objcount ),
 				changelog() { ; }
-				
-			virtual ~infi_multi_context_t() {
-				typename core::map_t<ContextType,local_handle>::iterator
-					iter = contexts.begin();
-				for( ;iter!=contexts.end();++iter ) {
-					std::cerr << "DESTROYING HANDLE " << iter->second.handle << std::endl;
-					DestroyHandle( iter->first, iter->second.handle );
-				}
-			}
+			
+			virtual ~infi_multi_context_t() { ; }
 			
 			HandleType handle() {
 				return this->get_handle().handle;
+			}
+			
+			bool destroy_handle( ContextType ctx ) {
+				typename core::map_t<ContextType,local_handle>::iterator
+					iter = contexts.find( ctx );
+				if ( iter != contexts.end() ) {
+					contexts.erase( iter );
+					return true;
+				} else
+					return false;
 			}
 			
 			bool exists( uint32 index ) {

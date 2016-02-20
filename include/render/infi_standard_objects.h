@@ -13,12 +13,15 @@ namespace render {
 	
 	// shaders
 	INFI_FUNCTION( infi_program_t*, InfiRect2DShader, () );
+	INFI_FUNCTION( infi_program_t*, InfiShader3D, () );
+	
 	INFI_FUNCTION( infi_program_t*, InfiHSVtoRGB, () );
 	INFI_FUNCTION( infi_program_t*, InfiRGBtoHSV, () );
 	INFI_FUNCTION( infi_program_t*, InfiHSVBlend, () );
 	
 	// vertex objects
 	INFI_FUNCTION( infi_vertices_t*, InfiRect2DVertices, () );
+	INFI_FUNCTION( infi_vertices_t*, InfiCube3DVertices, () );
 	
 	// functions
 	INFI_FUNCTION( void, InfiDrawRect, ( core::rectf, infi_texture_t* = NULL, float32 = 0 ) );

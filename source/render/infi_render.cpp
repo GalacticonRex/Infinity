@@ -1,10 +1,12 @@
 #include "render/infi_render.h"
 #include "render/infi_view_transform.h"
 #include "render/infi_texture.h"
+#include "render/infi_renderbuffer.h"
 #include "render/infi_canvas.h"
 #include "render/infi_program.h"
 #include "render/infi_vertices.h"
 #include "render/infi_gl_wrapper.h"
+#include "render/infi_gl_objects.h"
 
 namespace INFI {
 namespace render {
@@ -38,7 +40,13 @@ namespace render {
 		styles.push( INFI_TRIANGLES );
 	}
 	void InfiLQuitRender() {
-		
+		InfiLEmptyBlendModeCache();
+		InfiLEmptyCanvasCache();
+		InfiLEmptyRenderbufferCache();
+		InfiLEmptyStencilModeCache();
+		InfiLEmptyTextureCache();
+		InfiLEmptyVertexCache();
+		InfiLEmptyGLStateCache();
 	}
 	
 	static core::rectf viewport;
@@ -213,7 +221,7 @@ namespace render {
 		frame_iter iter = texture_frames.find( win );
 		uint32 fbuf;
 		if ( iter == texture_frames.end() ) {
-			InfiGLGenFramebuffers( 1, &fbuf );
+			fbuf = InfiGLCreateFramebuffer();
 			texture_frames[win].data.uptodate = false;
 			texture_frames[win].data.frame = fbuf;
 			texture_frames[win].name = tcv;

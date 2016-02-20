@@ -7,8 +7,6 @@
 namespace INFI {
 namespace render {
 	
-INFI_FUNCTION( void, InfiLEmptyVertexFormatCache, () );
-
 struct infi_field_t {
 	core::string_t name;
 	infi_t type;

@@ -21,20 +21,20 @@ vec3 Rotate(vec3 v,mat3 n) {
 				 v.x*n.data[1] + v.y*n.data[4] + v.z*n.data[7],
 				 v.x*n.data[2] + v.y*n.data[5] + v.z*n.data[8] );
 }
-vec3 Rotate(vec3 v,EulerAngles r) {
+vec3 Rotate(vec3 v,eulerangles_t r) {
 	mat3 n = toMatrix( r );
 	return vec3( v.x*n.data[0] + v.y*n.data[3] + v.z*n.data[6],
 				 v.x*n.data[1] + v.y*n.data[4] + v.z*n.data[7],
 				 v.x*n.data[2] + v.y*n.data[5] + v.z*n.data[8] );
 }
-vec3 Rotate(vec3 v,AxisAngle n) {
+vec3 Rotate(vec3 v,axisangle_t n) {
 	float32 cosw = cos( n.angle );
 	return v * cosw + 
 		   Cross( v,n.axis ) * sin( -n.angle ) + 
 		   n.axis * Dot( v,n.axis ) * (1.-cosw);
 }
-vec3 Rotate(vec3 v,Quaternion r) {
-	Quaternion q = Product( Product( r, asQuaternion( vec4(v.x,v.y,v.z,0.f) ) ), r.inverse() );
+vec3 Rotate(vec3 v,quaternion_t r) {
+	quaternion_t q = Product( Product( r, asQuaternion( vec4(v.x,v.y,v.z,0.f) ) ), r.inverse() );
 	return vec3( q.asVector().xyz() );
 }
 

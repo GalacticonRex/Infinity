@@ -28,21 +28,21 @@ namespace core {
 	INFI_FUNCTION( mat2, toMatrix, (float32) );
 
 	// convert 3D rotations to different representations
-	INFI_FUNCTION( mat3, toMatrix, (const EulerAngles&) );
-	INFI_FUNCTION( mat3, toMatrix, (const AxisAngle&) );
-	INFI_FUNCTION( mat3, toMatrix, (const Quaternion&) );
+	INFI_FUNCTION( mat3, toMatrix, (const eulerangles_t&) );
+	INFI_FUNCTION( mat3, toMatrix, (const axisangle_t&) );
+	INFI_FUNCTION( mat3, toMatrix, (const quaternion_t&) );
 
-	INFI_FUNCTION( AxisAngle, toAxisAngle, (const EulerAngles&) );
-	INFI_FUNCTION( AxisAngle, toAxisAngle, (const mat3&) );
-	INFI_FUNCTION( AxisAngle, toAxisAngle, (const Quaternion&) );
+	INFI_FUNCTION( axisangle_t, toAxisAngle, (const eulerangles_t&) );
+	INFI_FUNCTION( axisangle_t, toAxisAngle, (const mat3&) );
+	INFI_FUNCTION( axisangle_t, toAxisAngle, (const quaternion_t&) );
 
-	INFI_FUNCTION( EulerAngles, toEuler, (const mat3&) );
-	INFI_FUNCTION( EulerAngles, toEuler, (const AxisAngle&) );
-	INFI_FUNCTION( EulerAngles, toEuler, (const Quaternion&) );
+	INFI_FUNCTION( eulerangles_t, toEuler, (const mat3&) );
+	INFI_FUNCTION( eulerangles_t, toEuler, (const axisangle_t&) );
+	INFI_FUNCTION( eulerangles_t, toEuler, (const quaternion_t&) );
 
-	INFI_FUNCTION( Quaternion, toQuaternion, (const mat3&) );
-	INFI_FUNCTION( Quaternion, toQuaternion, (const AxisAngle&) );
-	INFI_FUNCTION( Quaternion, toQuaternion, (const EulerAngles&) );
+	INFI_FUNCTION( quaternion_t, toQuaternion, (const mat3&) );
+	INFI_FUNCTION( quaternion_t, toQuaternion, (const axisangle_t&) );
+	INFI_FUNCTION( quaternion_t, toQuaternion, (const eulerangles_t&) );
 
 } }
 
