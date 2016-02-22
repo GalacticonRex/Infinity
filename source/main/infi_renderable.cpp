@@ -6,8 +6,8 @@ namespace INFI {
 	const uint32 VISIBLE_MASK = 0x2;
 	const uint32 RED_BLACK_MASK = 0x80000000;
 	
-	infi_renderable_t::infi_renderable_t()
-		: parent( NULL ), zpos( 0 ), flags( ACTIVE_MASK | VISIBLE_MASK ) { }
+	infi_renderable_t::infi_renderable_t( uint32 z )
+		: parent( NULL ), zpos( z ), flags( ACTIVE_MASK | VISIBLE_MASK ) { }
 	
 	bool infi_renderable_t::is_active() const { return ( flags & ACTIVE_MASK ) != 0; }
 	bool infi_renderable_t::is_visible() const { return ( flags & VISIBLE_MASK ) != 0; }

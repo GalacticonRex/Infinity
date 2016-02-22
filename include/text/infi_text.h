@@ -10,13 +10,15 @@ namespace text {
 	
 	typedef uint32 INFI_fontFlags;
 	const uint32 INFI_FONT_REGULAR = 0x00,
-			   INFI_FONT_BOLD = 0x01,
-			   INFI_FONT_ITALIC = 0x02,
-			   INFI_FONT_BOLD_ITALIC = 0x03;
+			     INFI_FONT_BOLD = 0x01,
+			     INFI_FONT_ITALIC = 0x02,
+			     INFI_FONT_BOLD_ITALIC = 0x03;
 	
 	INFI_FUNCTION( void, InfiLCollectFontNames, () );
-	INFI_FUNCTION( void, InfiLFreeFontNames, () );
-	INFI_FUNCTION( const char*, InfiGetFontName, ( const char*, INFI_fontFlags = 0 ) );
+	INFI_FUNCTION( core::string_t, InfiGetFontName,
+					( const core::string_t&, INFI_fontFlags = 0 ) );
+	INFI_FUNCTION( void, InfiGetSystemFontNames,
+					( core::array_t<core::string_t>& ) );
 	
 	INFI_FUNCTION( void, InfiLInitText, () );
 	INFI_FUNCTION( void, InfiLQuitText, () );

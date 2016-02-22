@@ -92,8 +92,17 @@ INFI_FUNCTION( infi_bmp_font_t*, InfiCreateBitmapFont, ( const render::infi_text
 
 // create a font container
 INFI_FUNCTION( infi_font_container_t*, InfiCreateMultiFont, () );
-INFI_FUNCTION( void, InfiAddToMultiFont, ( infi_font_container_t*, const core::string_t&, uint32, INFI_fontFlags=0, uint32 = 0, core::vec3=core::vec3(1,1,1), core::vec2i=core::vec2i() ) );
-INFI_FUNCTION( void, InfiAddToMultiFont, ( infi_font_container_t*, infi_font_t*, core::vec3=core::vec3(1,1,1), core::vec2i=core::vec2i() ) );
+INFI_FUNCTION( void, InfiAddToMultiFont, ( infi_font_container_t*,
+										   const core::string_t&,
+										   uint32,
+										   INFI_fontFlags=0,
+										   uint32 = 0,
+										   core::vec3=core::vec3(1,1,1),
+										   core::vec2i=core::vec2i() ) );
+INFI_FUNCTION( void, InfiAddToMultiFont, ( infi_font_container_t*,
+										   infi_font_t*,
+										   core::vec3=core::vec3(1,1,1),
+										   core::vec2i=core::vec2i() ) );
 INFI_FUNCTION( void, InfiSetMultiFontColor, ( infi_font_container_t*, core::vec3, uint32 = 0 ) );
 INFI_FUNCTION( void, InfiSetAdvanceMultiFont, ( infi_font_container_t*, uint32 ) );
 

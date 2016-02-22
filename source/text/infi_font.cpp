@@ -50,6 +50,7 @@ namespace text {
 		vec2i pen = inpen - vec2i( fetch( str[0] )->before.x, 0 );
 		infi_font_metrics_t* met = (metrics) ? metrics : &glob_metrics;
 		
+		InfiGLPushBlendMode( BlendMix() );
 		InfiPushCamera();
 		InfiPushProgram( prog=InfiRect2DShader() );
 		InfiPushVertices( InfiRect2DVertices() );
@@ -85,6 +86,7 @@ namespace text {
 		InfiPopVertices();
 		InfiPopProgram();
 		InfiPopCamera();
+		InfiGLPopBlendMode();
 		
 		InfiGLDepthMask( true );
 	}

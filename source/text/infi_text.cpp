@@ -12,7 +12,7 @@ namespace {
 	using namespace render;
 }
 
-static void debugdisplay( ostream& out, char value ) {
+/*static void debugdisplay( ostream& out, char value ) {
 	if ( value >= 127 )
 		out << '#';
 	else if ( value > 96 )
@@ -23,30 +23,21 @@ static void debugdisplay( ostream& out, char value ) {
 		out << '.';
 	else
 		out << ' ';
-}
+}*/
 
 static render::infi_canvas_t* __fbo;
 static FT_Library __lib;
 
 void InfiLInitText() {
-	std::cerr << "Create Font Canvas" << std::flush << endl;
 	__fbo = InfiCreateEmptyCanvas();
-	std::cerr << "Collect Font Names" << std::flush << endl;
-	//InfiLCollectFontNames();
-	std::cerr << "Create Font Repository" << std::flush << endl;
+	InfiLCollectFontNames();
 	FT_Init_FreeType( &__lib );
-	std::cerr << "Text Init Done" << std::flush << endl;
 }
 
 void InfiLQuitText() {
-	std::cerr << "Destroy Text FBO" << std::flush << endl;
 	InfiDestroyCanvas( __fbo );
 	__fbo = NULL;
-	std::cerr << "Free Font Names" << std::flush << endl;
-	//InfiLFreeFontNames();
-	std::cerr << "Done with the FreeType Library" << std::flush << endl;
 	FT_Done_FreeType( __lib );
-	std::cerr << "Finished Deallocation of Fonts" << std::flush << endl;
 }
 
 struct sized_font_handle {
@@ -76,25 +67,21 @@ static FT_Face load_library( const char* fname, uint32 sz ) {
 	
 	return output;
 }
-/* KILL */
-const char* InfiGetFontName ( const char* a, INFI_fontFlags b ) {
-	return NULL;
-}
-/* KILL */
 static FT_Face load_sys_library( const char* fname, INFI_fontFlags flags, uint32 sz ) {
-	const char* sysname = InfiGetFontName( fname, flags );
+	core::string_t sysname = InfiGetFontName( fname, flags );
 	
-	if ( sysname == NULL )
+	if ( sysname.size() == 0 )
 		return NULL;
 			
-	ifstream istr( sysname );
+	const char* rawname = sysname.source();
+	ifstream istr( rawname );
 	if ( !istr.good() ) {
 		istr.close();
 		return NULL;
 	} istr.close();
 	
 	FT_Face output;
-	FT_New_Face( __lib, sysname, 0, &output );
+	FT_New_Face( __lib, rawname, 0, &output );
 	FT_Set_Char_Size( output, sz<<6, sz<<6, 96, 96 );
 	
 	return output;
@@ -247,7 +234,7 @@ infi_character_t* infi_tt_font_t::fetch( char k ) {
 			
 			gen_texture( w,h, brect, baselist, fontdata );
 			
-			// <---- DISPLAY TEXT -------------------------------------------->
+			/*// <---- DISPLAY TEXT -------------------------------------------->
 			for ( int32 y=0;y<h;y++ ) {
 				( y == h - cc->after.y ) ? std::cerr << ">> " : std::cerr << ".. ";
 				for ( int32 x=0;x<w;x++ ) 
@@ -255,7 +242,7 @@ infi_character_t* infi_tt_font_t::fetch( char k ) {
 				( y == h - cc->after.y ) ? std::cerr << " <<" : std::cerr << " ..";
 				std::cerr << endl;
 			} std::cerr << endl << endl;
-			// <-------------------------------------------------------------->
+			// <-------------------------------------------------------------->*/
 			
 		}
 		

@@ -13,12 +13,17 @@ struct quit : UsingUpdate {
 	}
 };
 
-struct Drawing : UsingUpdate, UsingRender {
+struct Drawing : virtual UsingUpdate,
+				 virtual UsingRender {
 	Texture rgb, hsv;
 	float shift, sat;
 	
-	Drawing( Texture a, Texture b )
-		: rgb(a), hsv(b), shift(0.f), sat(0.f) { ; }
+	Drawing( Texture a, Texture b ) :
+		UsingRender( 10 ),
+		rgb(a),
+		hsv(b),
+		shift(0.f),
+		sat(0.f) { ; }
 		
 	void Update( double dt ) {
 		if ( Keyboard.down ) {
@@ -37,19 +42,19 @@ struct Drawing : UsingUpdate, UsingRender {
 	}
 	
 	void Render( const vec2ui& frame, double dt ) {
-		InfiGLActivateTrace();
 		InfiConvertTexture( rgb, hsv, InfiHSVtoRGB() );
 		InfiPushCamera();
 		InfiGLPushBlendMode( BlendMix() );
-		InfiDrawRect( rectf( vec2(), (vec2)rgb->dimensions ), rgb );
+		InfiDrawRect( rgb->dimensions, rgb );
 		InfiPopCamera();
-		InfiGLDeactivateTrace();
 	}
 };
 
 struct simplerect : UsingRender {
 	Texture t;
-	simplerect( Texture tt ) : t(tt) { ; }
+	simplerect( Texture tt ) :
+		UsingRender( 10 ),
+		t(tt) { ; }
 	void Render( const vec2ui& frame, double dt ) {
 		InfiPushCamera();
 		InfiGLPushBlendMode( BlendMix() );
@@ -60,7 +65,12 @@ struct simplerect : UsingRender {
 };
 
 void init( infi_parameters_t& param ) {
-	Font f = text::InfiCreateFont( "res/test/fonts/segoeui.ttf", 64 );
+	Font f1 = text::InfiCreateFont( "Constantia", 64 );
+	Font f2 = text::InfiCreateFont( "Constantia", 64, text::INFI_FONT_REGULAR, 8 );
+	
+	MultiFont f3 = text::InfiCreateMultiFont();
+	text::InfiAddToMultiFont( f3, f2, vec3(0,0,0) );
+	text::InfiAddToMultiFont( f3, f1, vec3(1,1,1) );
 	
 	Texture loadin0 = io::InfiLoadTexture( "res/test/flowers/hibiscus.jpg" );
 	Texture tohsv = InfiConvertTexture( loadin0, InfiRGBtoHSV() );
@@ -70,7 +80,7 @@ void init( infi_parameters_t& param ) {
 									loadin0->dimensions );
 	win->clearcolor = {.25,.25,.25,1.0};
 	
-	Label* lab = new Label( "Hi Tahsin!", f, vec2() );
+	Label* lab = new Label( "Hi Tahsin!", f3, vec2(), 100 );
 	vec2 pos = loadin0->dimensions / 2 - lab->buffer->dimensions / 2;
 	lab->position = vec3( pos.x, pos.y, 0 );
 	
@@ -81,8 +91,6 @@ void init( infi_parameters_t& param ) {
 }
 
 int main() {
-	InfiGLActivateTrace();
 	InfiMain( init );
-	InfiGLDeactivateTrace();
 	return 0;
 }

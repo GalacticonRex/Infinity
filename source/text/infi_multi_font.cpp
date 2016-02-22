@@ -64,13 +64,22 @@ namespace text {
 		ft->advance = 0;
 		return ft;
 	}
-	void InfiAddToMultiFont( infi_font_container_t* cont, const string_t& ft, uint32 sz, INFI_fontFlags flg, uint32 out, vec3 col, vec2i offset ) {
+	void InfiAddToMultiFont( infi_font_container_t* cont,
+							 const string_t& ft,
+							 uint32 sz,
+							 INFI_fontFlags flg,
+							 uint32 out,
+							 vec3 col,
+							 vec2i offset ) {
 		infi_font_container_t::__node& n = cont->draw.add();
 		n.data = InfiCreateFont( ft, sz, flg, out );
 		n.offset = offset;
 		n.color = col;
 	}
-	void InfiAddToMultiFont( infi_font_container_t* cont, infi_font_t* f, vec3 col, vec2i offset ) {
+	void InfiAddToMultiFont( infi_font_container_t* cont,
+							 infi_font_t* f,
+							 vec3 col,
+							 vec2i offset ) {
 		infi_font_container_t::__node& n = cont->draw.add();
 		n.data = f;
 		n.offset = offset;

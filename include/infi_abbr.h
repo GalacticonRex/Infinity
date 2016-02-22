@@ -3,6 +3,7 @@
 
 #include "infinity.h"
 
+typedef INFI::infi_extension_t					Extension;
 typedef INFI::infi_extension_update_t			UsingUpdate;
 typedef INFI::infi_extension_prerender_t		UsingPreRender;
 typedef INFI::infi_extension_postrender_t		UsingPostRender;

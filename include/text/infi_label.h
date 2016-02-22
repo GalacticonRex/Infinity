@@ -20,17 +20,20 @@ namespace text {
 		infi_label_t( const core::string_t&, // Text
 					  const core::string_t&, // Font Name
 					  core::vec2i,			 // Position
-					  uint32 = 12 );			 // Font Size
+					  uint32 = 12,			 // Font Size
+					  uint32 = 0 );
 		
 		infi_label_t( const core::string_t&, // Text
 					  const core::string_t&, // Font Name
 					  INFI_fontFlags, 		 // Font Flags
 					  core::vec2i,			 // Position
-					  uint32 = 12 );			 // Font Size
+					  uint32 = 12,			 // Font Size
+					  uint32 = 0 );
 		
 		infi_label_t( const core::string_t&, // Text
 					  infi_font_t*, 		 // Font
-					  core::vec2i );		 // Position
+					  core::vec2i,			 // Position
+					  uint32 = 0 );
 		
 		void Render( const core::vec2ui&, float64 );
 	};

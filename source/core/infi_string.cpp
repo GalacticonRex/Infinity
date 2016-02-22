@@ -83,7 +83,7 @@ namespace core {
 	}
 	
 	string_t::string_t()
-		: data( string_allocate(NULL,0) ) {
+		: start(1), end(0), data( string_allocate(NULL,0) ) {
 		string_size( data ) = 0;
 	}
 	string_t::string_t( const char* str ) {
@@ -433,8 +433,9 @@ namespace core {
 		++ *(((uint32*)str)-STRING_ATTRIB_REF);
 	}
 	static void string_decrement( char* str ) {
-		if ( -- *(((uint32*)str)-STRING_ATTRIB_REF) == 0 )
+		if ( -- *(((uint32*)str)-STRING_ATTRIB_REF) == 0 ) {
 			delete[] (str - STRING_OFFSET_CONSTANT);
+		}
 	}
 	
 	static char* string_start( const string_t& str ) {
@@ -447,7 +448,7 @@ namespace core {
 		char* temp = ndata + STRING_OFFSET_CONSTANT;
 		
 		*(((uint32*)temp)-STRING_ATTRIB_DATA) = 1234;
-		*(((uint32*)temp)-STRING_ATTRIB_REF) = 0;
+		*(((uint32*)temp)-STRING_ATTRIB_REF) = 1;
 		string_alloc( temp ) = alloc;
 		
 		return temp;

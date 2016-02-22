@@ -15,7 +15,7 @@ namespace INFI {
 		uint32 zpos;
 		uint32 flags;
 		
-		infi_renderable_t();
+		infi_renderable_t( uint32 );
 		virtual ~infi_renderable_t() { }
 		
 		// draw the internal target

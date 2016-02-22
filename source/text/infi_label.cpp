@@ -20,11 +20,7 @@ namespace text {
 					 GL_DEPTH_BUFFER_BIT |
 					 GL_STENCIL_BUFFER_BIT );
 		InfiGLPushBlendMode( BlendExact() );
-		
-		InfiGLSendMessage( "Rasterize Font!" );
 		lab->ft->rasterize( {0,0}, lab->data );
-		InfiGLSendMessage( "Rasterize Done!" );
-		
 		InfiGLPopBlendMode();
 		InfiPopCanvas();
 	}
@@ -32,8 +28,9 @@ namespace text {
 	infi_label_t::infi_label_t( const string_t& txt,
 				  				const string_t& fname,
 				  				vec2i pos,
-				  				uint32 size )
-		: data( txt ), color(1,1,1,1) {
+				  				uint32 size,
+				  				uint32 depth )
+		: infi_renderable_t(depth), data( txt ), color(1,1,1,1) {
 		ft = InfiCreateFont( fname, size, 0 );
 		
 		position.x = pos.x;
@@ -51,8 +48,9 @@ namespace text {
 				  				const string_t& fname,
 				  				INFI_fontFlags flags,
 				  				vec2i pos,
-				  				uint32 size )
-		: data( txt ), color(1,1,1,1) {
+				  				uint32 size,
+				  				uint32 depth )
+		: infi_renderable_t(depth), data( txt ), color(1,1,1,1) {
 		ft = InfiCreateFont( fname, size, flags );
 		
 		position.x = pos.x;
@@ -68,8 +66,9 @@ namespace text {
 	
 	infi_label_t::infi_label_t( const string_t& txt,
 				  				infi_font_t* f,
-				  				vec2i pos )
-		: ft(f), data( txt ), color(1,1,1,1) {
+				  				vec2i pos,
+				  				uint32 depth )
+		: infi_renderable_t(depth), ft(f), data( txt ), color(1,1,1,1) {
 		position.x = pos.x;
 		position.y = pos.y;
 		position.z = 1;
