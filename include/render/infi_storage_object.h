@@ -16,7 +16,7 @@ namespace render {
 		
 		virtual void setData( const core::indexable_t<uint8>& ) = 0;
 		virtual void setData( uint32, const core::indexable_t<uint8>& ) = 0;
-		virtual void getData( core::data_t<uint8>& ) = 0;
+		virtual void getData( core::data_t<uint8>& ) const = 0;
 		
 		protected:
 			uint32 handle;

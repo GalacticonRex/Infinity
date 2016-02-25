@@ -13,7 +13,7 @@ namespace render {
 	
 	// shaders
 	INFI_FUNCTION( infi_program_t*, InfiRect2DShader, () );
-	INFI_FUNCTION( infi_program_t*, InfiShader3D, () );
+	INFI_FUNCTION( infi_program_t*, InfiLambert3D, () );
 	
 	INFI_FUNCTION( infi_program_t*, InfiHSVtoRGB, () );
 	INFI_FUNCTION( infi_program_t*, InfiRGBtoHSV, () );

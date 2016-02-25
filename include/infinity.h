@@ -41,6 +41,7 @@
 #include "render/infi_vertices.h"
 #include "render/infi_program.h"
 #include "render/infi_program_format.h"
+#include "render/infi_feedback.h"
 #include "render/infi_view_transform.h"
 #include "render/infi_standard_objects.h"
 

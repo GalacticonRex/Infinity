@@ -21,10 +21,10 @@ namespace INFI {
 	typedef double					float64;
 	
 	template<typename T>
-	using InfiGetter = const T& (*)();
+	using InfiGetter = T (*)();
 	
 	template<typename T>
-	using InfiSetter = void (*)( const T& );
+	using InfiSetter = void (*)( T );
 	
 	enum infi_t {
 		INFI_NONE	= GL_NONE,			 // 0

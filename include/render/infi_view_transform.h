@@ -52,6 +52,7 @@ INFI_FUNCTION( infi_orthogonal_t*, InfiCreateOrthogonal, ( const core::rectf& ) 
 
 INFI_FUNCTION( infi_projection_t*, InfiCreateProjection, ( float32 = 1.22173048 ) );
 
+INFI_FUNCTION( infi_camera_t*, InfiCreateCamera, ( const core::vec3&, float32 = 1.22173048 ) );
 INFI_FUNCTION( infi_camera_t*, InfiCreateCamera, ( const core::vec3&, const core::quaternion_t&, float32 = 1.22173048 ) );
 
 INFI_FUNCTION( const core::mat4&, InfiGetCamera, () );

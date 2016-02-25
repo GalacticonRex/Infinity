@@ -66,7 +66,8 @@ infi_projection_t::operator core::mat4() const {
 infi_camera_t::operator core::mat4() const {
 	mat4 proj = Perspective( fov, InfiGetRatio(), closeview, farview );
 	mat4 move = ExpandMat4( toMatrix( rotation ) ) * TranslationMatrix( -position );
-	return proj * transform_matrix * move;
+	mat4 ret = proj * transform_matrix * move;
+	return ret;
 }
 
 infi_orthogonal_t* InfiCreateOrthogonal( float32 x, float32 y, float32 w, float32 h ) {
@@ -96,6 +97,10 @@ infi_projection_t* InfiCreateProjection( float32 f ) {
 	return ret;
 }
 
+infi_camera_t* InfiCreateCamera( const core::vec3& pos, float32 f ) {
+	quaternion_t rot;
+	return InfiCreateCamera( pos, rot, f );
+}
 infi_camera_t* InfiCreateCamera( const vec3& pos, const quaternion_t& rot, float32 f ) {
 	infi_camera_t* ret = new infi_camera_t;
 	ret->position = pos;

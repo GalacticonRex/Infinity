@@ -105,7 +105,7 @@ infi_texture_t* InfiLoadTexture( const string_t& fname ) {
 	
 		ifstream istr( str.source() );
 		if ( !istr.good() ) {
-			InfiSendError( INFI_FILE_NOT_FOUND, "no file named %s", str.source() );
+			InfiSendError( INFI_FILE_NOT_FOUND, "no image file named %s", str.source() );
 		} istr.close();
 		
 		SDL_Surface* imgload = NULL;// = IMG_Load( str.source() );

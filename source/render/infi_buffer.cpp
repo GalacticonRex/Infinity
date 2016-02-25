@@ -226,7 +226,7 @@ namespace render {
 							 data.size(),
 							 data.source() );
 	}
-	void infi_buffer_t::getData( core::data_t<uint8>& output ) {
+	void infi_buffer_t::getData( core::data_t<uint8>& output ) const {
 		unmap_buffer( "infi_buffer.getData", handle );
 		InfiPushFunction( "infi_buffer.getData" );
 		InfiGLSetReadBuffer( handle );
@@ -235,6 +235,20 @@ namespace render {
 								0,
 								bytesize,
 								output.source() );
+		InfiPopFunction();
+	}
+	
+	void infi_buffer_t::resizeData( uint32 need ) {
+		InfiPushFunction( "infi_buffer.resizeData" );
+		if ( fork_data() || need > bytesize ) {
+			InfiGLSetWriteBuffer( handle );
+			InfiGLBufferData( GL_COPY_WRITE_BUFFER,
+							  need,
+							  NULL,
+							  convert_wrc_mask(flags) );
+			bytesize = need;
+			byteuse = 0;
+		}
 		InfiPopFunction();
 	}
 	

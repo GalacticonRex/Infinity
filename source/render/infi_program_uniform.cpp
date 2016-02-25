@@ -31,7 +31,7 @@ namespace render {
 		InfiGLUniformf( uni, v.x, v.y );
 	}
 	static void infi_vec2get( uint32 uni, uint8* data ) {
-		InfiGetter<core::vec2> ptr = *((InfiGetter<core::vec2>*)data);
+		InfiGetter<const core::vec2&> ptr = *((InfiGetter<const core::vec2&>*)data);
 		core::vec2 v = ptr();
 		InfiGLUniformf( uni, v.x, v.y );
 	}
@@ -40,7 +40,7 @@ namespace render {
 		InfiGLUniformf( uni, v.x, v.y, v.z );
 	}
 	static void infi_vec3get( uint32 uni, uint8* data ) {
-		InfiGetter<core::vec3> ptr = *((InfiGetter<core::vec3>*)data);
+		InfiGetter<const core::vec3&> ptr = *((InfiGetter<const core::vec3&>*)data);
 		core::vec3 v = ptr();
 		InfiGLUniformf( uni, v.x, v.y, v.z );
 	}
@@ -49,7 +49,7 @@ namespace render {
 		InfiGLUniformf( uni, v.x, v.y, v.z, v.w );
 	}
 	static void infi_vec4get( uint32 uni, uint8* data ) {
-		InfiGetter<core::vec4> ptr = *((InfiGetter<core::vec4>*)data);
+		InfiGetter<const core::vec4&> ptr = *((InfiGetter<const core::vec4&>*)data);
 		core::vec4 v = ptr();
 		InfiGLUniformf( uni, v.x, v.y, v.z, v.w );
 	}
@@ -57,21 +57,21 @@ namespace render {
 		InfiGLUniform( uni, *((core::mat2*)data) );
 	}
 	static void infi_mat2get( uint32 uni, uint8* data ) {
-		InfiGetter<core::mat2> ptr = *((InfiGetter<core::mat2>*)data);
+		InfiGetter<const core::mat2&> ptr = *((InfiGetter<const core::mat2&>*)data);
 		InfiGLUniform( uni, ptr() );
 	}
 	static void infi_mat3( uint32 uni, uint8* data ) {
 		InfiGLUniform( uni, *((core::mat3*)data) );
 	}
 	static void infi_mat3get( uint32 uni, uint8* data ) {
-		InfiGetter<core::mat3> ptr = *((InfiGetter<core::mat3>*)data);
+		InfiGetter<const core::mat3&> ptr = *((InfiGetter<const core::mat3&>*)data);
 		InfiGLUniform( uni, ptr() );
 	}
 	static void infi_mat4( uint32 uni, uint8* data ) {
 		InfiGLUniform( uni, *((core::mat4*)data) );
 	}
 	static void infi_mat4get( uint32 uni, uint8* data ) {
-		InfiGetter<core::mat4> ptr = *((InfiGetter<core::mat4>*)data);
+		InfiGetter<const core::mat4&> ptr = *((InfiGetter<const core::mat4&>*)data);
 		InfiGLUniform( uni, ptr() );
 	}
 	
@@ -147,22 +147,22 @@ namespace render {
 	UNIFORM( f, InfiGetter<float32>, infi_floatget, sizeof(float32), UniformFloatFunc, true )
 	
 	UNIFORM( 2f, const core::vec2&, infi_vec2, sizeof(core::vec2), UniformVec2, false )
-	UNIFORM( 2f, InfiGetter<core::vec2>, infi_vec2get, sizeof(core::vec2), UniformVec2Func, true )
+	UNIFORM( 2f, InfiGetter<const core::vec2&>, infi_vec2get, sizeof(core::vec2), UniformVec2Func, true )
 	
 	UNIFORM( 3f, const core::vec3&, infi_vec3, sizeof(core::vec3), UniformVec3, false )
-	UNIFORM( 3f, InfiGetter<core::vec3>, infi_vec3get, sizeof(core::vec3), UniformVec3Func, true )
+	UNIFORM( 3f, InfiGetter<const core::vec3&>, infi_vec3get, sizeof(core::vec3), UniformVec3Func, true )
 	
 	UNIFORM( 4f, const core::vec4&, infi_vec4, sizeof(core::vec4), UniformVec4, false )
-	UNIFORM( 4f, InfiGetter<core::vec4>, infi_vec4get, sizeof(core::vec4), UniformVec4Func, true )
+	UNIFORM( 4f, InfiGetter<const core::vec4&>, infi_vec4get, sizeof(core::vec4), UniformVec4Func, true )
 	
 	UNIFORM( Mat2, const core::mat2&, infi_mat2, 2, UniformMatrix2, false )
-	UNIFORM( Mat2, InfiGetter<core::mat2>, infi_mat2get, 2, UniformMatrix2Func, true )
+	UNIFORM( Mat2, InfiGetter<const core::mat2&>, infi_mat2get, 2, UniformMatrix2Func, true )
 	
 	UNIFORM( Mat3, const core::mat3&, infi_mat3, 3, UniformMatrix3, false )
-	UNIFORM( Mat3, InfiGetter<core::mat3>, infi_mat3get, 3, UniformMatrix3Func, true )
+	UNIFORM( Mat3, InfiGetter<const core::mat3&>, infi_mat3get, 3, UniformMatrix3Func, true )
 	
 	UNIFORM( Mat4, const core::mat4&, infi_mat4, 4, UniformMatrix4, false )
-	UNIFORM( Mat4, InfiGetter<core::mat4>, infi_mat4get, 4, UniformMatrix4Func, true )
+	UNIFORM( Mat4, InfiGetter<const core::mat4&>, infi_mat4get, 4, UniformMatrix4Func, true )
 	
 	void infi_program_t::uniformSampler( const core::string_t& uni, infi_texture_t* value ) { \
 		InfiPushFunction( "UniformSampler2D" );

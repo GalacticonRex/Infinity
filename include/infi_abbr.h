@@ -21,9 +21,21 @@ typedef INFI::render::infi_vertices_t*			Vertices;
 typedef INFI::render::infi_formatted_buffer_t	FormatBuffer;
 typedef INFI::render::infi_program_t*			Program;
 
+typedef INFI::render::infi_camera_t*			Camera;
+typedef INFI::render::infi_orthogonal_t*		Orthogonal;
+typedef INFI::render::infi_projection_t*		Perspective;
+typedef INFI::render::infi_view_matrix_t*		ViewMatrix;
+typedef INFI::render::infi_view_transform_t*	ViewTransform;
+
 typedef INFI::text::infi_tt_font_t*				Font;
 typedef INFI::text::infi_bmp_font_t*			BitmapFont;
 typedef INFI::text::infi_font_container_t*		MultiFont;
 typedef INFI::text::infi_label_t				Label;
+
+#define Infi_Update( dt ) \
+		void Update( INFI::float64 dt )
+		
+#define Infi_Render( frame, dt ) \
+		void Render( const INFI::core::vec2ui& frame, INFI::float64 dt )
 
 #endif//__INFI_ABBREVIATIONS_H__

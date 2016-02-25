@@ -1,11 +1,37 @@
 INFINITY Render Engine
 
 -----------------------------------------------------------------
+25 Feb 2016
+-----------------------------------------------------------------
+RESOLVED
+*	got a cube to draw
+*	fixed an error with the index buffer in infi_vertices_t
+*	finished a WaveFront loader
+
+TO-DO
+!!! program frequently stalls on quit in Cygwin
+!!	redo the low level indexable_t structure
+	it is difficult to convert from one type to another
+*	when a texture is rendered to, its mipmap levels are
+	not updated
+*	fix UsingRender ordering
+?	commit objects by name to allow for global access
+	e.g. InfiCreateProgram( "HelloWorld" );
+		 Program prog = InfiProgram( "HelloWorld" );
+??	make each instance of the engine it's own object?
+		that way there is no need to reset the global variables
+		whenever InfiMain is recalled
+
+-----------------------------------------------------------------
 21 Feb 2016
 -----------------------------------------------------------------
 RESOLVED
 * 	can now load system fonts
 * 	fixed a bug in the string_t class
+
+TO-DO
+*	how do stencil buffers even work?
+*	more thorough HOWTO
 
 -----------------------------------------------------------------
 20 Feb 2016

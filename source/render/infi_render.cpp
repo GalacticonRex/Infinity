@@ -1,4 +1,5 @@
 #include "render/infi_render.h"
+#include "render/infi_format.h"
 #include "render/infi_view_transform.h"
 #include "render/infi_texture.h"
 #include "render/infi_renderbuffer.h"
@@ -21,6 +22,16 @@ namespace render {
 	};
 	typedef core::map_t<infi_window_t*, texture_framebuffer>::iterator frame_iter;
 	static core::map_t<infi_window_t*, texture_framebuffer> texture_frames;
+	
+	struct feedback_mapping {
+		infi_buffer_t* buffer;
+		const infi_format_t* formatting;
+		core::data_t<core::string_t> elements;
+	};
+	
+	typedef core::map_t<uint32, feedback_mapping>::iterator feedback_iter;
+	static core::map_t<uint32, feedback_mapping> feedback_map;
+	static bool feedback_is_enabled;
 	
 	static core::stack_t<infi_canvas_t*> canvases;
 	static core::stack_t<bool> 			 istexture;
@@ -54,7 +65,7 @@ namespace render {
 	static core::vec2ui basic_size(2,2);
 	float32 InfiGetRatio() {
 		core::vec2ui temp = InfiGetDimensions();
-		return (float32) temp.y / (float32) temp.x;
+		return (float32) temp.x / (float32) temp.y;
 	}
 	const core::vec2ui& InfiGetDimensions() {
 		infi_canvas_t* cv;
@@ -162,6 +173,17 @@ namespace render {
 		// enable program
 		pr->compile();
 		InfiGLPushProgram( pr->handle );
+		
+		if ( feedback_is_enabled && pr->flags.has_feedback ) {
+			feedback_iter f = feedback_map.find( pr->handle );
+			infi_buffer_t* buf = f->second.buffer;
+			buf->resizeData( ((count==-1)?v->vcount:count) *
+							 f->second.formatting->stride() );
+			InfiGLBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER,
+								  0, buf->getHandle() );
+			InfiGLBeginTransformFeedback( *styles );
+		}
+		
 		InfiGLPushTextureFrame();
 		pr->uniforms.use( pr->handle );
 		
@@ -177,6 +199,12 @@ namespace render {
 		}
 		
 		InfiGLPopTextureFrame();
+		
+		if ( feedback_is_enabled && pr->flags.has_feedback ) {
+			InfiGLEndTransformFeedback();
+			InfiGLBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0,  0 );
+		}
+		
 		InfiGLPopProgram();
 		InfiGLPopVertexArray();
 		InfiGLPopFramebuffer();
@@ -241,6 +269,74 @@ namespace render {
 			istexture.pop();
 		}
 		InfiPopFunction();
+	}
+	
+	void InfiDestroyProgram( infi_program_t* prog ) {
+		if ( prog->flags.has_feedback ) {
+			feedback_iter f = feedback_map.find( prog->handle );
+			if ( f != feedback_map.end() )
+				feedback_map.erase( f );
+		}
+		for ( uint32 i=0;i<6;i++ )
+			if ( prog->components[i] != 0 )
+				InfiGLDeleteShader( prog->components[i] );
+		InfiGLDeleteProgram( prog->handle );
+		delete[] prog->components;
+		delete prog;
+	}
+	
+	void InfiEnableFeedback() {
+		feedback_is_enabled = true;
+	}
+	void InfiDisableFeedback() {
+		feedback_is_enabled = false;
+	}
+	
+	infi_buffer_t const* InfiAssignFeedback(infi_program_t* prog,
+											const infi_format_t* formatting,
+											uint32 count,
+											const char** names) {
+		infi_buffer_t* nbuf = NULL;
+		
+		core::data_t<core::string_t> namelist( count );
+		for ( uint32 i=0;i<count;++i ) {
+			for ( uint32 j=0;j<i;++i )
+				if ( namelist[j] == names[i] )
+					InfiSendError( INFI_BINDING_ERROR,
+								   "duplicate element %s",
+								   names[i] );
+			namelist[i] = names[i];
+		}
+		
+		
+		feedback_iter f = feedback_map.find( prog->handle );
+		if ( f == feedback_map.end() ) {
+			nbuf = new infi_buffer_t;
+			feedback_mapping entry;
+				entry.buffer = nbuf;
+				entry.formatting = formatting;
+				entry.elements = namelist;
+			feedback_map.insert( std::make_pair( prog->handle, entry ) );
+		} else {
+			nbuf = f->second.buffer;
+			f->second.elements = namelist;
+		}
+		
+		InfiGLTransformFeedbackVaryings( prog->handle, count, names,
+									  	 GL_INTERLEAVED_ATTRIBS );
+		
+		prog->flags.uptodate = false;
+		prog->flags.has_feedback = true;
+		
+		return nbuf;
+	}
+	
+	infi_buffer_t const* InfiAssignFeedback(infi_program_t* prog,
+											const infi_format_t* form,
+											std::initializer_list<const char*> stdinit) {
+		uint32 count = stdinit.end() - stdinit.begin();
+		const char** names = (const char**) &(*(stdinit.begin()));
+		return InfiAssignFeedback( prog, form, count, names );
 	}
 	
 } }

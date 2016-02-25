@@ -108,6 +108,9 @@ namespace render {
 			
 			// no fragment shader
 			uint32 raster_discard : 1;
+			
+			// no fragment shader
+			uint32 has_feedback : 1;
 		} flags;
 		
 		uint32 active_shaders() const;
@@ -123,22 +126,22 @@ namespace render {
 		void uniformf( const core::string_t&, InfiGetter<float32> );
 		
 		void uniform2f( const core::string_t&, const core::vec2& );
-		void uniform2f( const core::string_t&, InfiGetter<core::vec2> );
+		void uniform2f( const core::string_t&, InfiGetter<const core::vec2&> );
 		
 		void uniform3f( const core::string_t&, const core::vec3& );
-		void uniform3f( const core::string_t&, InfiGetter<core::vec3> );
+		void uniform3f( const core::string_t&, InfiGetter<const core::vec3&> );
 		
 		void uniform4f( const core::string_t&, const core::vec4& );
-		void uniform4f( const core::string_t&, InfiGetter<core::vec4> );
+		void uniform4f( const core::string_t&, InfiGetter<const core::vec4&> );
 		
 		void uniformMat2( const core::string_t&, const core::mat2& );
-		void uniformMat2( const core::string_t&, InfiGetter<core::mat2> );
+		void uniformMat2( const core::string_t&, InfiGetter<const core::mat2&> );
 		
 		void uniformMat3( const core::string_t&, const core::mat3& );
-		void uniformMat3( const core::string_t&, InfiGetter<core::mat3> );
+		void uniformMat3( const core::string_t&, InfiGetter<const core::mat3&> );
 		
 		void uniformMat4( const core::string_t&, const core::mat4& );
-		void uniformMat4( const core::string_t&, InfiGetter<core::mat4> );
+		void uniformMat4( const core::string_t&, InfiGetter<const core::mat4&> );
 		
 		void uniformSampler( const core::string_t&, infi_texture_t* );
 		void uniformSampler( const core::string_t&, InfiGetter<infi_texture_t*> );

@@ -4,16 +4,22 @@
 #include "core/infi_raw_data.h"
 #include "render/infi_standard_objects.h"
 #include "render/infi_can_render.h"
+#include "render/infi_gl_wrapper.h"
 
 namespace INFI {
 namespace render {
-	
-static infi_program_t* __rect2dshader;
-static infi_program_t* __hsvtorgb;
-static infi_program_t* __rgbtohsv;
-static infi_program_t* __hsvblend;
+
+static infi_vertices_t* __rect2dverts;	
 static infi_buffer_t* __rect2ddata;
-static infi_vertices_t* __rect2dverts;
+	static infi_program_t* __rect2dshader;
+	static infi_program_t* __hsvtorgb;
+	static infi_program_t* __rgbtohsv;
+	static infi_program_t* __hsvblend;
+
+static infi_vertices_t* __cube3dverts;
+static infi_buffer_t* __cube3ddata;
+static infi_buffer_t* __cube3dindices;
+static infi_program_t* __lambert3d;
 
 static core::string_t __rect2dshader_vertex =
 	"#version 150\n"
@@ -157,18 +163,19 @@ void InfiLInitObjects() {
 	__hsvblend->uniformMat4( "viewport", InfiGetCamera );
 	__hsvblend->uniform4f( "color", InfiGetColor );
 	
-	float32 data[] = { 1.f,0.f, 1.f,0.f,
+	float32 rect[] = { 1.f,0.f, 1.f,0.f,
 					   0.f,1.f, 0.f,1.f,
 					   0.f,0.f, 0.f,0.f,
 					   0.f,1.f, 0.f,1.f,
 					   1.f,0.f, 1.f,0.f,
 					   1.f,1.f, 1.f,1.f };
 	
-	__rect2ddata = new infi_buffer_t( core::raw_data_t<uint8>( sizeof(data), (uint8*)data ) );
+	__rect2ddata = new infi_buffer_t( core::raw_data_t<uint8>( sizeof(rect), (uint8*)rect ) );
 	
 	__rect2dverts = InfiCreateVertices();
 	InfiSetFormat( __rect2dverts, Pos2Tex2() );
 	InfiBindVertices( __rect2dverts, infi_formatted_buffer_t( __rect2ddata, Pos2Tex2() ) );
+	
 	InfiPopFunction();
 }
 void InfiLQuitObjects() {
@@ -199,8 +206,12 @@ infi_program_t* InfiHSVBlend() {
 infi_vertices_t* InfiRect2DVertices() {
 	return __rect2dverts;
 }
+infi_vertices_t* InfiCube3DVertices() {
+	return __cube3dverts;
+}
 
 void InfiDrawRect( core::rectf rt, infi_texture_t* tex, float32 rotation ) {
+	InfiGLDepthMask( false );
 	InfiPushProgram( InfiRect2DShader() );
 	InfiPushVertices( InfiRect2DVertices() );
 	
@@ -223,6 +234,7 @@ void InfiDrawRect( core::rectf rt, infi_texture_t* tex, float32 rotation ) {
 	
 	InfiPopProgram();
 	InfiPopVertices();
+	InfiGLDepthMask( true );
 }
 
 infi_texture_t* InfiConvertTexture( infi_texture_t* input, infi_program_t* prog, const char* name ) {

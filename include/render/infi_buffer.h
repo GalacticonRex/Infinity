@@ -23,14 +23,15 @@ struct infi_buffer_t : infi_storage_t {
 	infi_buffer_t( INFI_array_write = INFI_W_STATIC );
 	infi_buffer_t( const core::indexable_t<uint8>&,
 				   INFI_array_write = INFI_W_STATIC );
-	
 	infi_buffer_t( const infi_buffer_t& );
 	
 	~infi_buffer_t();
 	
 	void setData( const core::indexable_t<uint8>& );
 	void setData( uint32, const core::indexable_t<uint8>& );
-	void getData( core::data_t<uint8>& );
+	void getData( core::data_t<uint8>& ) const;
+	
+	void resizeData( uint32 );
 	
 	uint8 operator[] ( uint32 ) const;
 	void* operator* () const;

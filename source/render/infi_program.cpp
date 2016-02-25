@@ -57,8 +57,14 @@ namespace render {
 		if ( info == NULL )
 			return false;
 		const char* name = data.localize().source();
-		if ( location == (uint32)-1 )
+		if ( location == (uint32)-1 ) {
 			location = InfiGLGetUniformLocation( prog, name );
+			if ( location == (uint32)-1 ) {
+				InfiSendError( INFI_BINDING_ERROR,
+							   "shader uniform %s is not used",
+							   data.localize().source() );
+			}
+		}
 		return true;
 	}
 	void infi_uniform_field_t::use() {
@@ -265,15 +271,8 @@ namespace render {
 		ret->flags.compute = 0;
 		ret->flags.uptodate = 0;
 		ret->flags.raster_discard = 1;
+		ret->flags.has_feedback = 0;
 		return ret;
-	}
-	void InfiDestroyProgram( infi_program_t* prog ) {
-		for ( uint32 i=0;i<6;i++ )
-			if ( prog->components[i] != 0 )
-				InfiGLDeleteShader( prog->components[i] );
-		InfiGLDeleteProgram( prog->handle );
-		delete[] prog->components;
-		delete prog;
 	}
 
 	static void parse_shader( infi_program_t* prog, uint32 shad, const core::string_t& data ) {

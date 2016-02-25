@@ -74,7 +74,7 @@ namespace render {
 		InfiLSignalTransformChange();
 	}
 	void InfiScale( float32 x ) {
-		mat4 m = ExpandMat4( ScalingMatrix( vec2(x,x) ) );
+		mat4 m = ScalingMatrix( vec3(x,x,x) );
 		transform_stack.mult( m );
 		InfiLSignalTransformChange();
 	}

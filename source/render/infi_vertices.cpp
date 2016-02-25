@@ -27,26 +27,30 @@ void infi_vertices_t::SyncObject( const local_handle& temp,
 	InfiPushFunction( "infi_vertices_t.sync" );
 	InfiGLPushVertexArray( temp.handle );
 	
-	if ( buf.data.disable ) {
-		InfiGLDisableVertexAttribArray( index );
+	if ( index == (uint32) -1 ) {
+		InfiGLBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buf.buffer->getHandle() );
 	} else {
-		InfiGLEnableVertexAttribArray( index );
-		InfiGLBindBuffer( GL_ARRAY_BUFFER, buf.buffer->getHandle() );
-		buf.field.enable( index, buf.data.stride );
+		if ( buf.data.disable ) {
+			InfiGLDisableVertexAttribArray( index );
+		} else {
+			InfiGLEnableVertexAttribArray( index );
+			InfiGLBindBuffer( GL_ARRAY_BUFFER, buf.buffer->getHandle() );
+			buf.field.enable( index, buf.data.stride );
+		}
 	}
 	
 	InfiGLPopVertexArray();
 	InfiPopFunction();
 }
 void infi_vertices_t::get_vertex_count() {
-	vcount = 0;
-	for ( uint32 i=0;i<buffers.size();++i ) {
-		uint32 sz = buffers[i].buffer()->bytesize / buffers[i].format()->stride();
-		vcount = (vcount==0) ? sz : std::min( sz, vcount );
-	}
-	if ( indices != NULL ) {
-		uint32 sz = indices->bytesize / infi_sizeof(INFI_UINT);
-		vcount = (vcount==0) ? sz : std::min( sz, vcount );
+	if ( indices == NULL ) {
+		vcount = 0;
+		for ( uint32 i=0;i<buffers.size();++i ) {
+			uint32 sz = buffers[i].buffer()->bytesize / buffers[i].format()->stride();
+			vcount = (vcount==0) ? sz : std::min( sz, vcount );
+		}
+	} else {
+		vcount = indices->bytesize / infi_sizeof(INFI_UINT);
 	}
 }
 
@@ -130,6 +134,10 @@ void InfiSetFormat( infi_vertices_t* verts, infi_format_t const* form ) {
 	InfiPopFunction();
 }
 void InfiSetIndices( infi_vertices_t* verts, infi_buffer_t const* buffer ) {
+	infi_vertex_binding_t vb;
+	vb.buffer = buffer;
+	verts->add( (uint32) -1, vb );
+	
 	verts->indices = buffer;
 	verts->get_vertex_count();
 }

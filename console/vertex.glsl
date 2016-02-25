@@ -2,15 +2,16 @@
 
 uniform mat4 transform;
 uniform mat4 viewport;
-uniform vec2 texture_shift = vec2(0,0);
-uniform vec2 texture_scale = vec2(1,1);
 
-in vec2 position;
+in vec3 position;
 in vec2 texcoord;
+in vec3 normal;
 
-out vec2 Vtexcoord;
+out vec2 v_texcoord;
+out vec3 v_normal;
 
 void main() {
-	gl_Position = viewport * transform * vec4( position, 1,1 );
-	Vtexcoord = ( texcoord * texture_scale ) + texture_shift;
+	gl_Position = viewport * transform * vec4( position, 1 );
+	v_texcoord = texcoord;
+	v_normal = normal;
 }
