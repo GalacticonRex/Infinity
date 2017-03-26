@@ -1,109 +1,114 @@
-# Inclusion Dependency Args
+# General Purpose x86/x64 Makefile Script
 
-SUFFIXES 	+= .d
-NODEPS 		:= clean tags svn
+MAINDIR = examples
+EXENAME = example
+DLLNAME = Infinity
 
-# Variables Entries
-
-MAINDIR = console
-NAME 	= Infinity
-TARGET  = .
-
-# Main Entries
-
-PROGRAMS = dll exe fastdll fastexe
+TARGET  	:= bin
+TARGET32  	:= bin/x86
+TARGET64  	:= bin/x64
 
 COMPILER 	:= g++
-BASEFLAGS 	:= -std=c++11 -c -MMD -MP -Wall -Wfatal-errors
-DLLOPTIONS 	:= -shared -Wl,--out-implib,$(NAME).a
-EXEOPTIONS  := 
-#EXEOPTIONS  := -Wl,--subsystem,windows
+BASEFLAGS 	:= -std=c++11 -c -MMD -MP -Wall -Wfatal-errors -O3
+
+INCLUDES 	:= -Iinclude -Idepend/include
+
+LIBDIR32 	:= lib/x86
+LIBDIR64 	:= lib/x64
+
+DLLLIB32	:= $(LIBDIR32)/$(DLLNAME).a
+DLLLIB64	:= $(LIBDIR64)/$(DLLNAME).a
+
+DLLOPT32	:= -shared -Wl,--out-implib,$(DLLLIB32)
+DLLOPT64	:= -shared -Wl,--out-implib,$(DLLLIB64)
+
+LIBS 		:= -lglu32 -lopengl32 -lmingw32 -mwindows -Wl,--no-undefined -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion -luuid -static-libgcc
+LIBS32 		:= $(shell ls -d $(LIBDIR32)/depend/*) $(LIBS)
+LIBS64 		:= $(shell ls -d $(LIBDIR64)/depend/*) $(LIBS)
 
 SOURCEDIR 	:= source
-OBJDIR 		:= obj
-LIBDIR 		:= lib
-
 SRCDIRS 	:= $(shell ls $(SOURCEDIR)/)
-INCLUDES 	:= -I./include -I./depend
-LIBS 		:= -lmingw32 $(shell ls -d $(LIBDIR)/*) -lglu32 -lopengl32
+SOURCES 	:= $(shell find $(SOURCEDIR)/ -name '*.cpp')
 
-SOURCES := $(shell find $(SOURCEDIR)/ -name '*.cpp')
-OBJDUMP := $(patsubst $(SOURCEDIR)/%.cpp,%.o,$(SOURCES))
+OBJDIR 		:= obj
 
-MAINSRC := $(shell find $(MAINDIR)/ -name '*.cpp')
-MAINDMP := $(patsubst $(MAINDIR)/%.cpp,%.o,$(MAINSRC))
+OBJDIREXE32 := $(OBJDIR)/x86/exe
+OBJDIREXE64 := $(OBJDIR)/x64/exe
+OBJDIRDLL32 := $(OBJDIR)/x86/dll
+OBJDIRDLL64 := $(OBJDIR)/x64/dll
 
-EXE_ARG := -DINFI_BUILD_AS_EXE
-DLL_ARG := -DINFI_BUILD_AS_DLL
+OBJSUBEXE32	:= $(addprefix $(OBJDIREXE32)/, $(SRCDIRS))
+OBJSUBEXE64	:= $(addprefix $(OBJDIREXE64)/, $(SRCDIRS))
+OBJSUBDLL32	:= $(addprefix $(OBJDIRDLL32)/, $(SRCDIRS))
+OBJSUBDLL64	:= $(addprefix $(OBJDIRDLL64)/, $(SRCDIRS))
+OBJDUMP 	:= $(patsubst $(SOURCEDIR)/%.cpp, %.o, $(SOURCES))
 
-define build_progs
-	$(1)_OBJECTS = $(addprefix $(OBJDIR)/$(1)/,$(OBJDUMP))
-	$(1)_MAIN = $(addprefix $(OBJDIR)/$(1)/$(MAINDIR)/,$(MAINDMP))
-endef
+OBJEXE32	:= $(addprefix $(OBJDIREXE32)/, $(OBJDUMP))
+OBJEXE64	:= $(addprefix $(OBJDIREXE64)/, $(OBJDUMP))
+OBJDLL32	:= $(addprefix $(OBJDIRDLL32)/, $(OBJDUMP))
+OBJDLL64	:= $(addprefix $(OBJDIRDLL64)/, $(OBJDUMP))
 
-$(foreach prog,$(PROGRAMS),$(eval $(call build_progs,$(prog))))
-RECIPES = $(patsubst %,$(OBJDIR)/%/%.o, $(PROGRAMS))
-MAINREP = $(patsubst %,$(OBJDIR)/%/$(MAINDIR)/%.o, $(PROGRAMS))
+MAINSRC 	:= $(shell find $(MAINDIR)/ -name '*.cpp')
+MAINDUMP 	:= $(notdir $(MAINSRC:.cpp=.o))
 
-define mkdir_subobjs
-	@echo $(OBJDIR)/$(1)
-	mkdir -p $(OBJDIR)/$(1)
-	for dir in $(SRCDIRS); \
-	do \
-		echo $(OBJDIR)/$(1)/$$dir; \
-		mkdir -p $(OBJDIR)/$(1)/$$dir; \
-	done
-endef
-define mkdir_objs
-	@echo $(OBJDIR)
-	mkdir -p $(OBJDIR)
-endef
-define mkdir_main
-	@echo $(OBJDIR)/$(1)/$(MAINDIR)
-	mkdir -p $(OBJDIR)/$(1)/$(MAINDIR)
-endef
+MAINDIREXE32:= $(OBJDIR)/main/x32/exe/$(MAINDIR)
+MAINDIREXE64:= $(OBJDIR)/main/x64/exe/$(MAINDIR)
+MAINDIRDLL32:= $(OBJDIR)/main/x32/dll/$(MAINDIR)
+MAINDIRDLL64:= $(OBJDIR)/main/x64/dll/$(MAINDIR)
 
-dll: FILE_ARG 	= $(DLL_ARG)
-dll: CPPFLAGS 	= $(BASEFLAGS)
-dll: SUBDIR		= dll
-dll: build_dump $(dll_OBJECTS)
-	$(COMPILER) $(dll_OBJECTS) $(LIBS) -o $(TARGET)/$(NAME).dll $(DLLOPTIONS)
+MAINEXE32  	:= $(addprefix $(MAINDIREXE32)/, $(MAINDUMP))
+MAINEXE64  	:= $(addprefix $(MAINDIREXE64)/, $(MAINDUMP))
+MAINDLL32  	:= $(addprefix $(MAINDIRDLL32)/, $(MAINDUMP))
+MAINDLL64  	:= $(addprefix $(MAINDIRDLL64)/, $(MAINDUMP))
 
-exe: FILE_ARG 	= $(EXE_ARG)
-exe: CPPFLAGS 	= $(BASEFLAGS)
-exe: SUBDIR		= exe
-exe: build_maindump $(exe_OBJECTS) $(exe_MAIN)
-	$(COMPILER) $(exe_OBJECTS) $(exe_MAIN) $(LIBS) -o $(TARGET)/$(NAME).exe $(EXEOPTIONS)
-	$(TARGET)/$(NAME).exe
-	
-fastdll: FILE_ARG 	= $(DLL_ARG)
-fastdll: CPPFLAGS 	= $(BASEFLAGS) -O3
-fastdll: SUBDIR		= fastdll
-fastdll: build_dump $(fastdll_OBJECTS)
-	$(COMPILER) $(fastdll_OBJECTS) $(LIBS) -o $(TARGET)/$(NAME).dll $(DLLOPTIONS) 
-	
-fastexe: FILE_ARG 	= $(EXE_ARG)
-fastexe: CPPFLAGS 	= $(BASEFLAGS) -O3
-fastexe: SUBDIR		= fastexe
-fastexe: build_maindump $(fastexe_OBJECTS) $(fastexe_MAIN)
-	$(COMPILER) $(fastexe_OBJECTS) $(fastexe_MAIN) $(LIBS) -o $(TARGET)/$(NAME).exe $(EXEOPTIONS)
-	$(TARGET)/$(NAME).exe
+EXE_ARG 	:= -DEXPORT_AS_EXE -ggdb
+DLL_ARG 	:= -DEXPORT_AS_DLL
 
-$(RECIPES): $(SOURCEDIR)/%.cpp
-	$(COMPILER) $(CPPFLAGS) $(FILE_ARG) $(INCLUDES) $< -o $@
-	
-$(MAINREP): $(MAINDIR)/%.cpp
-	$(COMPILER) $(CPPFLAGS) $(FILE_ARG) $(INCLUDES) $< -o $@
-	
-build_dump:
-	@$(call mkdir_objs)
-	@$(call mkdir_subobjs,$(SUBDIR))
-	
-build_maindump: build_dump
-	@$(call mkdir_main,$(SUBDIR))
-	
-define make_includes
-	-include $(patsubst %.o,%.d,$($(1)_OBJECTS))
-endef
+x64: folder_x64_dll x64dll $(MAINDLL64)
+	$(COMPILER) $(MAINDLL64) $(DLLLIB64) -o $(TARGET64)/$(EXENAME).exe
+	cd $(TARGET64); ./$(EXENAME).exe; cd -
 
-$(foreach prog,$(PROGRAMS),$(eval $(call make_includes,$(prog))))
+x64dll_main: folder_x64_dll $(MAINDLL64)
+	$(COMPILER) $(MAINDLL64) $(DLLLIB64) -o $(TARGET64)/$(EXENAME).exe
+	cd $(TARGET64); ./$(EXENAME).exe; cd -
+
+x64dll: folder_x64lib_dll $(OBJDLL64)
+	$(COMPILER) $(OBJDLL64) $(LIBS64) -o $(TARGET64)/$(DLLNAME).dll $(DLLOPT64)
+
+x64exe: folder_x64lib_exe folder_x64_exe $(OBJEXE64) $(MAINEXE64)
+	$(COMPILER) $(OBJEXE64) $(MAINEXE64) $(LIBS64) -o $(TARGET64)/$(EXENAME).exe
+	./$(TARGET64)/$(EXENAME).exe
+
+folder_x64_exe:
+	$(shell mkdir -p $(MAINDIREXE64))
+
+folder_x64lib_exe:
+	$(shell mkdir -p $(OBJSUBEXE64))
+
+folder_x64_dll:
+	$(shell mkdir -p $(MAINDIRDLL64))
+
+folder_x64lib_dll:
+	$(shell mkdir -p $(OBJSUBDLL64))
+
+$(OBJDIREXE64)/%.o: $(SOURCEDIR)/%.cpp
+	$(COMPILER) $(BASEFLAGS) $(EXE_ARG) $(INCLUDES) $< -o $@
+
+$(OBJDIRDLL64)/%.o: $(SOURCEDIR)/%.cpp
+	$(COMPILER) $(BASEFLAGS) $(DLL_ARG) $(INCLUDES) $< -o $@
+
+$(MAINDIREXE64)/%.o: $(MAINDIR)/%.cpp
+	$(COMPILER) $(BASEFLAGS) $(EXE_ARG) $(INCLUDES) $< -o $@
+
+$(MAINDIRDLL64)/%.o: $(MAINDIR)/%.cpp
+	$(COMPILER) $(BASEFLAGS) $(INCLUDES) $< -o $@
+
+-include $(OBJEXE32:.o=.d)
+-include $(OBJEXE64:.o=.d)
+-include $(MAINEXE32:.o=.d)
+-include $(MAINEXE64:.o=.d)
+
+-include $(OBJDLL32:.o=.d)
+-include $(OBJDLL64:.o=.d)
+-include $(MAINDLL32:.o=.d)
+-include $(MAINDLL64:.o=.d)

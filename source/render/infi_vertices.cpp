@@ -1,176 +1,83 @@
-#include "render/infi_vertices.h"
-#include "render/infi_gl_wrapper.h"
-#include "render/infi_gl_objects.h"
-#include <set>
+#include "render/infi_vertices.hpp"
+#include "render/infi_renderer.hpp"
+#include "render/infi_sync_renderer.hpp"
+#include "render/infi_buffer_object.hpp"
 
-namespace INFI {
-namespace render {
-	
-static std::set<infi_vertices_t*> cache;
+namespace Infinity {
+namespace Render {
 
-void InfiLEmptyVertexCache() {
-	auto iter = cache.begin();
-	for ( ;iter!=cache.end();++iter )
-		InfiDestroyVertices( *iter );
-	cache.clear();
-}
-	
-uint32 infi_vertices_t::CreateNewHandle( infi_window_t* win ) {
-	InfiPushFunction( "infi_vertices_t.create_handle" );
-	uint32 hnd = InfiGLCreateVertexArray();
-	InfiPopFunction();
-	return hnd;
-}
-void infi_vertices_t::SyncObject( const local_handle& temp,
-								  uint32 index,
-								  const infi_vertex_binding_t& buf ) {
-	InfiPushFunction( "infi_vertices_t.sync" );
-	InfiGLPushVertexArray( temp.handle );
-	
-	if ( index == (uint32) -1 ) {
-		InfiGLBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buf.buffer->getHandle() );
-	} else {
-		if ( buf.data.disable ) {
-			InfiGLDisableVertexAttribArray( index );
-		} else {
-			InfiGLEnableVertexAttribArray( index );
-			InfiGLBindBuffer( GL_ARRAY_BUFFER, buf.buffer->getHandle() );
-			buf.field.enable( index, buf.data.stride );
+	infi_vertices_t::Bind::Bind(infi_renderer_t& r, infi_vertices_t& v) :
+		_vertices(v), _renderer(r) {
+		_renderer.pushVertexArray(_vertices._handle);
+	}
+	infi_vertices_t::Bind::~Bind() {
+		_renderer.popVertexArray();
+	}
+
+	infi_vertices_t::infi_vertices_t() :
+		_handle(0),
+		_vertices(0),
+		_indices(0),
+		_vertex_count(0) { ; }
+
+	infi_vertices_t::infi_vertices_t(infi_renderer_t& r) :
+		_handle(r.createVertexArray()),
+		_vertices(0),
+		_indices(0),
+		_vertex_count(0) { ; }
+
+	void infi_vertices_t::create(infi_synchronized_renderer_t& r) {
+		if ( _handle != 0 )
+			Error::send<Error::Fatality::Method>(
+				Error::Type::Init,
+				"Vertex Object already initialized"
+			);
+
+		infi_synchronized_renderer_t::Acquire rend(r);
+		_handle = rend -> createVertexArray();
+	}
+
+	infi_vertices_t::Modify::Modify(infi_renderer_t& r, infi_vertices_t& v) :
+		_vertices(v), _renderer(r) { ; }
+
+	void infi_vertices_t::Modify::vertices(const infi_buffer_object_t& buffer) {
+		_vertices._vertices = buffer.handle();
+		_renderer.arrayBufferToVertexArray(_vertices._handle, buffer.handle());
+	}
+	void infi_vertices_t::Modify::indices(const infi_buffer_object_t& buffer) {
+		_vertices._indices = buffer.handle();
+		_renderer.indexBufferToVertexArray(_vertices._handle, buffer.handle());
+	}
+
+	void infi_vertices_t::Modify::attributes(const infi_vertex_format_t& v) {
+		_vertices.format = v;
+		std::size_t offset = 0;
+		for (uint32 i=0;i<_vertices.format.attributeCount();i++) {
+			const infi_vertex_format_t::formatted_attrib& a = _vertices.format[i];
+			_renderer.enableVertexArray(_vertices._handle,
+										a.bind_point,
+										a.count,
+										a.type,
+										offset);
+			offset += a.size;
 		}
 	}
-	
-	InfiGLPopVertexArray();
-	InfiPopFunction();
-}
-void infi_vertices_t::get_vertex_count() {
-	if ( indices == NULL ) {
-		vcount = 0;
-		for ( uint32 i=0;i<buffers.size();++i ) {
-			uint32 sz = buffers[i].buffer()->bytesize / buffers[i].format()->stride();
-			vcount = (vcount==0) ? sz : std::min( sz, vcount );
-		}
-	} else {
-		vcount = indices->bytesize / infi_sizeof(INFI_UINT);
-	}
-}
-
-infi_vertices_t* InfiCreateVertices() {
-	infi_vertices_t* vb = new infi_vertices_t;
-	
-	vb->vcount = 0;
-	vb->format = NULL;
-	vb->indices = NULL;
-	
-	cache.insert( vb );
-	return vb;
-	
-}
-void InfiDestroyVertices( infi_vertices_t* vb ) {
-	cache.erase( vb );
-	delete vb;
-}
-infi_vertices_t* InfiCopyVertices( infi_vertices_t const* vb ) {
-	InfiPushFunction( "InfiCopyVertices" );
-	infi_vertices_t* ret = new infi_vertices_t( *vb );
-	
-	ret->vcount = vb->vcount;
-	ret->format = vb->format;
-	ret->indices = vb->indices;
-	ret->inuse = vb->inuse;
-	
-	InfiPopFunction();
-	return ret;
-}
-
-uint32 InfiBindVertices( infi_vertices_t* verts,
-						 const infi_formatted_buffer_t& buffer ) {
-	InfiPushFunction( "InfiBindVertices" );
-	
-	if ( verts->format == NULL )
-		InfiSendError( INFI_BINDING_ERROR,
-					   "cannot bind buffer to unformatted vertex object" );
-	
-	const infi_buffer_t* b = buffer.buffer();   
-	const infi_format_t* f = buffer.format(); 
-	uint32 stride = f->stride();
-	
-	for ( uint32 i=0;i<f->size();++i ) {
-		uint32 index = buffer.index(i);
-		if ( verts->inuse[index] )
-			InfiSendError( INFI_BINDING_ERROR,
-						   "vertex attribute %d is already in use", index );
-		if ( !(f->fields[i] == verts->format->fields[index] ) )
-			InfiSendError( INFI_BINDING_ERROR,
-						   "cannot map attribute %d in incoming buffer to %d in vertex object",
-						   i, index );
-		infi_vertex_binding_t vb;
-		vb.buffer = b;
-		vb.field = f->fields[i];
-		vb.data.disable = false;
-		vb.data.stride = stride;
-		verts->add( index, vb );
-		verts->inuse.set( index );
-		++ verts->active;
-	}
-	
-	verts->buffers.add( buffer );
-	verts->get_vertex_count();
-	
-	InfiPopFunction();
-	
-	return verts->buffers.size() - 1;
-}
-
-void InfiSetFormat( infi_vertices_t* verts, infi_format_t const* form ) {
-	InfiPushFunction( "InfiBindVertices" );
-	if ( verts->format != NULL ) {
-		for ( uint32 i=0;i<verts->format->size();++i ) {
-			if ( verts->exists(i) && !(verts->get(i).field == form->fields[i]) )
-				InfiSendError( INFI_BINDING_ERROR,
-						  	   "cannot remap attribute %d in vertex object", i );
+	void infi_vertices_t::Modify::attributes(const std::vector<infi_vertex_format_t::attribute>& a) {
+		_vertices.format = infi_vertex_format_t(a);
+		std::size_t offset = 0;
+		for (uint32 i=0;i<_vertices.format.attributeCount();i++) {
+			const infi_vertex_format_t::formatted_attrib& a = _vertices.format[i];
+			_renderer.enableVertexArray(_vertices._handle,
+										a.bind_point,
+										a.count,
+										a.type,
+										offset);
+			offset += a.size;
 		}
 	}
-	verts->format = form;
-	InfiPopFunction();
-}
-void InfiSetIndices( infi_vertices_t* verts, infi_buffer_t const* buffer ) {
-	infi_vertex_binding_t vb;
-	vb.buffer = buffer;
-	verts->add( (uint32) -1, vb );
-	
-	verts->indices = buffer;
-	verts->get_vertex_count();
-}
-void InfiClearVertices( infi_vertices_t* verts, infi_format_t const* buffer ) {
-	for ( uint32 i=0;i<verts->inuse.size();++i ) {
-		if ( verts->inuse[i] ) {
-			infi_vertex_binding_t vb;
-			vb.data.disable = false;
-			verts->add( i, vb );
-		}
+
+	uint32 infi_vertices_t::vertexCount() const {
+		return _vertex_count;
 	}
-	verts->inuse.clear();
-	verts->buffers.clear();
-	verts->active = 0;
-	verts->indices = NULL;
-	verts->format = NULL;
-	verts->vcount = 0;
-}
-
-static core::stack_t<infi_vertices_t*> vertstack;
-
-infi_vertices_t* InfiCurrentVertices() {
-	return ( vertstack.empty() ) ? NULL : *vertstack;
-}
-void InfiPushVertices( infi_vertices_t* verts ) {
-	InfiPushFunction( "InfiPushVertices" );
-	vertstack.push( verts );
-	InfiPopFunction();
-}
-void InfiPopVertices() {
-	InfiPushFunction( "InfiPopVertices" );
-	vertstack.pop();
-	InfiPopFunction(); 
-}
 
 } }

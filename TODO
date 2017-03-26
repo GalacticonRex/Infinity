@@ -1,0 +1,8 @@
++------------------------------------------------------------------------------+
+| TODO LIST (19 Mar 2017)                                                        |
++------------------------------------------------------------------------------+
+  * blend functions (RESOLVED 20 Mar 2017)
+  * stencil functions
+  * "then" functionality for render functions
+  * vertex arrays
+  * transform feedbacks
