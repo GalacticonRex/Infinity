@@ -632,7 +632,7 @@ namespace Render {
 	}
 	void infi_gl_t::DepthFunc( GLenum mode ) const {
 		glDepthFunc(mode);
-		__log_operation(_start, _output_log, _trace_on, "glDepthFunc()");
+		__log_operation(_start, _output_log, _trace_on, "glDepthFunc(%s)", glenum(mode));
 	}
 	void infi_gl_t::DepthMask( bool active ) const {
 		glDepthMask(active);
@@ -680,6 +680,15 @@ namespace Render {
 		return i;
 	}
 
+	void infi_gl_t::CullFace( GLenum mode ) const {
+		glCullFace(mode);
+		__log_operation(_start, _output_log, _trace_on, "glCullFace(%s)", glenum(mode));
+	}
+	void infi_gl_t::FrontFace( GLenum mode ) const {
+		glFrontFace(mode);
+		__log_operation(_start, _output_log, _trace_on, "glFrontFace(%s)", glenum(mode));
+	}
+
 	void infi_gl_t::Disable( GLenum elem ) const {
 		glDisable(elem);
 		__log_operation(_start, _output_log, _trace_on, "glDisable(%s)", glenum(elem));
@@ -698,7 +707,7 @@ namespace Render {
 	}
 	void infi_gl_t::GetFloatv( GLenum pname, float32* output ) const {
 		glGetFloatv(pname, output);
-		__log_operation(_start, _output_log, _trace_on, "glGetFloatv()");
+		__log_operation(_start, _output_log, _trace_on, "glGetFloatv(%d, %p)", pname, output);
 	}
 	void infi_gl_t::GetIntegerv( GLenum pname, int32* output ) const {
 		glGetIntegerv(pname, output);
@@ -710,7 +719,7 @@ namespace Render {
 	}
 	void infi_gl_t::ShadeModel( GLenum mode ) const {
 		glShadeModel(mode);
-		__log_operation(_start, _output_log, _trace_on, "glShadeModel()");
+		__log_operation(_start, _output_log, _trace_on, "glShadeModel(%s)", glenum(mode));
 	}
 	void infi_gl_t::Viewport( const core::rect& r ) const {
 		glViewport(r.x, r.y, r.w, r.h);

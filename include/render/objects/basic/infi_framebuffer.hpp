@@ -3,13 +3,14 @@
 
 #include "core/vector.hpp"
 #include "render/infi_renderer.hpp"
+#include "render/infi_render_resource.hpp"
 
 namespace Infinity {
 namespace Render {
 
-	struct DEFINE_EXPORT infi_framebuffer_t {
+	struct infi_framebuffer_t : public infi_resource_t {
 	private:
-		uint32 _handle;
+		bool _ready;
 		core::rgba_t _clear_color;
 		core::vec2i _dimensions;
 
@@ -33,6 +34,7 @@ namespace Render {
 		infi_framebuffer_t(infi_renderer_t&, const core::rgba_t&);
 
 		void create(infi_synchronized_renderer_t&);
+		bool ready() const;
 		
 		const core::vec2i& dimensions() const;
 		const core::rgba_t& clearColor() const;

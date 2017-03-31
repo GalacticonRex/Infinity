@@ -1,4 +1,4 @@
-#include "render/infi_texture.hpp"
+#include "render/objects/basic/infi_texture.hpp"
 #include "engine/infi_controller.hpp"
 #include "render/infi_sync_renderer.hpp"
 #include "render/gl/infi_gl_context_controller.hpp"
@@ -425,9 +425,9 @@ namespace Render {
 	}
 
 	infi_texture_t::infi_texture_t() :
-		_handle(0) { ; }
+		infi_resource_t(0) { ; }
 	infi_texture_t::infi_texture_t(infi_renderer_t& r) :
-		_handle(r.createTexture()) { ; }
+		infi_resource_t(r.createTexture()) { ; }
 	infi_texture_t::~infi_texture_t() {
 
 	}
@@ -437,9 +437,10 @@ namespace Render {
 		_handle = r -> createTexture();
 	}
 
-	uint32 infi_texture_t::handle() const {
-		return _handle;
+	bool infi_texture_t::ready() const {
+		return (_dimensions != core::vec2i());
 	}
+	
 	const core::vec2i& infi_texture_t::dimensions() const {
 		return _dimensions;
 	}

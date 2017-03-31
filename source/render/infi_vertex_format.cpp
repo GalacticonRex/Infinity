@@ -1,4 +1,4 @@
-#include "render/infi_vertex_format.hpp"
+#include "render/objects/basic/infi_vertex_format.hpp"
 #include "render/gl/infi_gl.hpp"
 #include "render/gl/infi_gl_context_controller.hpp"
 #include "render/gl/infi_gl_version.hpp"

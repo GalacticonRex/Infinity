@@ -1,4 +1,4 @@
-#include "render/infi_blend_func.hpp"
+#include "render/objects/basic/infi_blend_func.hpp"
 #include "render/infi_renderer.hpp"
 
 namespace Infinity {

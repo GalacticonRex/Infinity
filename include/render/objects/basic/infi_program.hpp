@@ -6,13 +6,14 @@
 #include "render/gl/infi_gl.hpp"
 #include "render/gl/infi_gl_command.hpp"
 #include "render/infi_render_async.hpp"
-#include "render/infi_vertex_format.hpp"
+#include "render/objects/basic/infi_vertex_format.hpp"
 #include "render/infi_renderer.hpp"
+#include "render/infi_render_resource.hpp"
 
 namespace Infinity {
 namespace Render {
 
-	struct infi_program_t {
+	struct infi_program_t : public infi_resource_t {
 	private:
 		struct __link_program__ : public infi_gl_typed_function_t<infi_program_t*> {
 		private:
@@ -29,15 +30,32 @@ namespace Render {
 			std::string name;
 			T data;
 		};
+		template<typename T>
+		struct __data_array__ {
+			infi_program_t* source;
+			std::string name;
+			uint32 count;
+			T* data;
+		};
 
 		struct __assign_uniform_int1__ : public infi_gl_typed_function_t< __data_item__<int32> > {
 			typedef __data_item__<int32> data_item;
 			bool compatible(const infi_gl_t&) const;
 			void run(const infi_gl_t&, infi_gl_context_controller_t&, data_item&) const;
 		};
+		struct __assign_uniform_int1v__ : public infi_gl_typed_function_t< __data_array__<int32> > {
+			typedef __data_array__<int32> data_item;
+			bool compatible(const infi_gl_t&) const;
+			void run(const infi_gl_t&, infi_gl_context_controller_t&, data_item&) const;
+		};
 
 		struct __assign_uniform_float1__ : public infi_gl_typed_function_t< __data_item__<float32> > {
 			typedef __data_item__<float32> data_item;
+			bool compatible(const infi_gl_t&) const;
+			void run(const infi_gl_t&, infi_gl_context_controller_t&, data_item&) const;
+		};
+		struct __assign_uniform_float1v__ : public infi_gl_typed_function_t< __data_array__<float32> > {
+			typedef __data_array__<float32> data_item;
 			bool compatible(const infi_gl_t&) const;
 			void run(const infi_gl_t&, infi_gl_context_controller_t&, data_item&) const;
 		};
@@ -87,8 +105,7 @@ namespace Render {
 		uint32 __get_uniform(const std::string&);
 		uint32 __get_attribute(const std::string&);
 
-		bool _linked;
-		uint32 _handle;
+		uint8 _linked;
 
 		std::vector<ShaderAttribType> _uniform_types;
 		std::vector<ShaderAttribType> _attrib_types;
@@ -99,8 +116,11 @@ namespace Render {
 		__link_program__ _linker;
 
 		__assign_uniform_int1__ _assign_int1;
+		__assign_uniform_int1v__ _assign_int1v;
 
 		__assign_uniform_float1__ _assign_float1;
+		__assign_uniform_float1v__ _assign_float1v;
+
 		__assign_uniform_float2__ _assign_float2;
 		__assign_uniform_float3__ _assign_float3;
 		__assign_uniform_float4__ _assign_float4;
@@ -141,8 +161,10 @@ namespace Render {
 			~Bind();
 
 			void uniformi(const std::string&, int32);
+			void uniformiv(const std::string&, uint32, int32*);
 
 			void uniform(const std::string&, float32);
+			void uniformv(const std::string&, uint32, float32*);
 
 			void uniform(const std::string&, const core::vec2&);
 			void uniform(const std::string&, const core::vec3&);
@@ -167,6 +189,7 @@ namespace Render {
 		infi_program_t(infi_renderer_t&);
 
 		void create(infi_synchronized_renderer_t&);
+		bool ready() const;
 
 		infi_render_async_t link(infi_renderer_t&);
 	};

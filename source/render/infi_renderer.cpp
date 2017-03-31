@@ -140,6 +140,9 @@ namespace Render {
 	void infi_renderer_t::indexBufferToVertexArray(uint32 vao, uint32 buf) {
 		_contexts.indexBufferToVertexArray(vao, buf);
 	}
+	void infi_renderer_t::vertexSizeToVertexArray(uint32 vao, uint32 size) {
+		_contexts.vertexSizeToVertexArray(vao, size);
+	}
 	void infi_renderer_t::enableVertexArray(uint32 vao, uint32 index, uint32 count, uint32 type, uint32 offset) {
 		_contexts.enableVertexArray(vao, index, count, type, offset);
 	}

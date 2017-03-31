@@ -21,7 +21,7 @@
 #include "engine/winmngr/infi_win_mngr_module.hpp"
 
 #include "threads/infi_trigger.hpp"
-#include "threads/infi_time_stream.hpp"
+#include "threads/infi_event_clock.hpp"
 
 #include "render/gl/infi_gl_defs.hpp"
 #include "render/infi_render_defs.hpp"
@@ -102,6 +102,8 @@ namespace Infinity {
 	struct infi_window_t : public does_not_copy {
 	private:
 
+		typedef std::multiset<infi_renderable_t*, infi_renderable_t::compare> renderable_set;
+
 		std::string			_winname;
 		uint32				_id;
 		core::vec2i 		_position;
@@ -109,7 +111,7 @@ namespace Infinity {
 		core::vec2ui 		_dimensions;
 		core::vec4i 		_limits;
 		uint64				_counter;
-		infi_time_stream_t	_stream;
+		infi_event_clock_t		_stream;
 		float64				_framerate;
 		float64				_lastframe;
 		core::rgba_t		_clearcolor;
@@ -117,18 +119,16 @@ namespace Infinity {
 		uint32				_build_flags;
 		void*				_sdl;
 		void*				_context;
-		std::multiset<infi_renderable_t*, infi_renderable_t::compare>
-							_renderables;
+		renderable_set		_renderables;
 		infi_keyboard_t		_keyboard;
 		infi_mouse_t		_mouse;
 		infi_input_events_t _input;
 
 		infi_win_mngr_module_t::bindRenderable& _renderable;
 
-		struct __window_trigger : public infi_trigger_t {
+		struct __window_trigger : public infi_event_trigger_t<void> {
 			bool _flagged;
 			__window_trigger();
-			void Triggered(infi_trigger_t*, bool, void*);
 		} _close;
 
 		friend struct __window_trigger;
@@ -151,23 +151,29 @@ namespace Infinity {
 
 	public:
 
-		infi_trigger_t& close;
+		infi_event_trigger_t<void>& close;
 		infi_input_events_t& input;
 
 		infi_window_t( const infi_display_list_t&, infi_win_mngr_module_t::bindRenderable&, const std::string&, const infi_window_spec_t& );
 		~infi_window_t();
 
 		const std::string& name() const { return _winname; }
+		
 		uint32 width() const { return _dimensions.x; }
 		uint32 height() const { return _dimensions.y; }
+		const core::vec2ui& dimensions() const { return _dimensions; }
+		
 		int32 x() const { return _position.x; }
 		int32 y() const { return _position.y; }
+		const core::vec2i& position() const { return _position; }
+
 		int32 hmax() const { return _limits.x; }
 		int32 hmin() const { return _limits.y; }
 		int32 vmax() const { return _limits.z; }
 		int32 vmin() const { return _limits.w; }
+
 		float64 frameRate() const { return _framerate; }
-		infi_time_stream_t& timeStream() { return _stream; }
+		infi_event_clock_t& clock() { return _stream; }
 
 		void clearColor(const core::rgba_t& color) { _clearcolor = color; }
 		void clearColor(float32 r, float32 g, float32 b, float32 a) { _clearcolor = core::rgba_t(r,g,b,a); }
@@ -191,8 +197,8 @@ namespace Infinity {
 		infi_window_t& renderWith( infi_renderable_t* );
 		infi_window_t& renderWith( infi_renderable_t& );
 
-		infi_window_t& unRenderWith( infi_renderable_t* );
-		infi_window_t& unRenderWith( infi_renderable_t& );
+		infi_window_t& remove( infi_renderable_t* );
+		infi_window_t& remove( infi_renderable_t& );
 
 		friend struct infi_root_module_t;
 	};

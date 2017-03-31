@@ -6,7 +6,8 @@
 #include <queue>
 #include <unordered_map>
 #include "threads/infi_thread_defs.hpp"
-#include "threads/infi_time_stream.hpp"
+#include "threads/infi_event_trigger.hpp"
+#include "threads/infi_event_clock.hpp"
 #include "threads/infi_generic_allocator.hpp"
 
 namespace Infinity {
@@ -21,7 +22,7 @@ namespace Infinity {
 		struct message_t {
 		public:
 			message_t();
-			message_t(const infi_time_stream_t&, float64, message);
+			message_t(const infi_event_clock_t&, float64, message);
 
 			bool operator<(const message_t&) const;
 
@@ -41,10 +42,10 @@ namespace Infinity {
 		public:
 			static bool __sort_streams(stream_ref_t* const&, stream_ref_t* const&);
 
-			stream_ref_t(const infi_time_stream_t*);
-			void rebind(const infi_time_stream_t*);
+			stream_ref_t(const infi_event_clock_t*);
+			void rebind(const infi_event_clock_t*);
 
-			const infi_time_stream_t* stream() const;
+			const infi_event_clock_t* stream() const;
 
 			Time::Point waitUntil() const;
 			uint32 remaining() const;
@@ -58,13 +59,13 @@ namespace Infinity {
 			void calculateValue();
 
 		private:
-			const infi_time_stream_t* _source;
+			const infi_event_clock_t* _source;
 			uint32 _index;
 			std::priority_queue<message_t> _messages;
 			Time::Point _logged_value;
 		};
 
-		struct stream_heap_t : public infi_trigger_t {
+		struct stream_heap_t : public infi_event_trigger_t<infi_event_clock_t*> {
 		public:
 			stream_heap_t();
 			~stream_heap_t();
@@ -72,23 +73,21 @@ namespace Infinity {
 			message_t top();
 
 			void pushImmediate(message);
-			void push(infi_time_stream_t*, message_t);
+			void push(infi_event_clock_t*, message_t);
 			message pop();
 
 		private:
-			void Triggered(infi_trigger_t* sender, bool sig, void* data);
-
 			std::mutex _lock;
 			std::condition_variable _condition;
 
 			std::stack<stream_ref_t*> _available;
-			std::unordered_map<const infi_time_stream_t*, stream_ref_t*> _mapping;
+			std::unordered_map<const infi_event_clock_t*, stream_ref_t*> _mapping;
 			std::vector<stream_ref_t*> _data;
 
 			// messages that are requesting immediate processing
 			std::queue<message> _immediate;
 
-			stream_ref_t* _get(infi_time_stream_t*);
+			stream_ref_t* _get(infi_event_clock_t*);
 			void _verify(stream_ref_t*);
 			void _push(stream_ref_t*);
 			const stream_ref_t* _peek() const;
@@ -114,7 +113,7 @@ namespace Infinity {
 		}
 
 		void write(message);
-		void write(infi_time_stream_t&, float64, message);
+		void write(infi_event_clock_t&, float64, message);
 		message read();
 	};
 

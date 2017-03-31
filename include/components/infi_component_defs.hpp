@@ -18,6 +18,7 @@ namespace Infinity {
 
 	struct DEFINE_EXPORT infi_extension_t;
 	struct DEFINE_EXPORT infi_async_t;
+	struct DEFINE_EXPORT infi_clock_t;
 
 	struct DEFINE_EXPORT infi_operator_thread_t;
 	struct DEFINE_EXPORT infi_operator_thread_pool_t;

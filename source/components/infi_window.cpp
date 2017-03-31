@@ -20,12 +20,11 @@ infi_window_spec_t::infi_window_spec_t() :
 	resizable( false ),
 	builtin_ui( false ) { ; }
 
-infi_window_t::__window_trigger::__window_trigger() : _flagged(false) { ; }
-void infi_window_t::__window_trigger::Triggered(infi_trigger_t* ev, bool sig, void* data) {
-	if ( sig ) { 
-		_flagged = true;
-	}
-}
+infi_window_t::__window_trigger::__window_trigger() :
+	infi_event_trigger_t([this](bool sig){
+		if ( sig ) _flagged = true;
+	}),
+	_flagged(false) { ; }
 
 infi_window_t::infi_window_t( const infi_display_list_t& disp, infi_win_mngr_module_t::bindRenderable& rb, const std::string& n, const infi_window_spec_t& spec ) :
 	_winname( n ),
@@ -106,7 +105,7 @@ infi_window_t& infi_window_t::renderWith( infi_renderable_t& r ) {
 	return *this;
 }
 
-infi_window_t& infi_window_t::unRenderWith( infi_renderable_t* r ) {
+infi_window_t& infi_window_t::remove( infi_renderable_t* r ) {
 	std::multiset<infi_renderable_t*>::iterator iter = _renderables.find(r);
 	if ( iter == _renderables.end() ) {
 		//Error::define_scope __scope__("infi_window_t.-=");
@@ -119,7 +118,7 @@ infi_window_t& infi_window_t::unRenderWith( infi_renderable_t* r ) {
 	r->_parent = NULL;
 	return *this;
 }
-infi_window_t& infi_window_t::unRenderWith( infi_renderable_t& r ) {
+infi_window_t& infi_window_t::remove( infi_renderable_t& r ) {
 	std::multiset<infi_renderable_t*>::iterator iter = _renderables.find(&r);
 	if ( iter == _renderables.end() ) {
 		//Error::define_scope __scope__("infi_window_t.-=");

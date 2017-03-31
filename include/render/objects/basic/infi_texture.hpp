@@ -7,6 +7,7 @@
 #include "render/gl/infi_gl_command.hpp"
 #include "render/infi_renderer.hpp"
 #include "render/infi_sync_renderer.hpp"
+#include "render/infi_render_resource.hpp"
 #include "threads/infi_typed_allocator.hpp"
 #include "threads/infi_threadable.hpp"
 #include "components/infi_async.hpp"
@@ -17,7 +18,7 @@
 namespace Infinity {
 namespace Render {
 
-	struct infi_texture_t {
+	struct infi_texture_t : public infi_resource_t {
 	static const uint32& padding;
 
 	struct texture_format {
@@ -130,9 +131,7 @@ namespace Render {
 			__png_loader__(const std::string&, infi_texture_t&);
 		};
 
-		uint32 _handle;
 		texture_format _format;
-
 		core::vec2i _dimensions;
 
 		__upload_data__ _upload_data;
@@ -198,6 +197,7 @@ namespace Render {
 		~infi_texture_t();
 
 		void create(infi_synchronized_renderer_t&);
+		bool ready() const;
 
 		template<infi_threadable_t::Operation _Eval=infi_threadable_t::Parallel>
 		typename infi_threadable_t::function_return<_Eval>::type
@@ -207,7 +207,6 @@ namespace Render {
 		typename infi_threadable_t::function_return<_Eval>::type
 			PNG(infi_controller_t&, const std::string&);
 
-		uint32 handle() const;
 		const core::vec2i& dimensions() const;
 	};
 

@@ -25,7 +25,7 @@ namespace Infinity {
 	}
 	void infi_renderable_t::parent( infi_window_t& win ) {
 		if ( _parent != NULL )
-			(*_parent).unRenderWith(this);
+			(*_parent).remove(this);
 		_parent = &win;
 	}
 
@@ -35,7 +35,7 @@ namespace Infinity {
 	void infi_renderable_t::depth( uint32 nd) {
 		_zpos = nd;
 		if ( _parent != NULL ) {
-			(*_parent).unRenderWith(this);
+			(*_parent).remove(this);
 			(*_parent).renderWith(this);
 		}
 	}

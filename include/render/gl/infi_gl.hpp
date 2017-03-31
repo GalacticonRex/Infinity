@@ -216,6 +216,9 @@ namespace Render {
 		const uint8* GetStringi( GLenum name, uint32 index ) const;
 		bool IsEnabled( GLenum cap ) const;
 
+		void CullFace( GLenum ) const;
+		void FrontFace( GLenum ) const;
+
 		void Disable( GLenum elem ) const;
 		void Enable( GLenum elem ) const;
 		void Flush() const;

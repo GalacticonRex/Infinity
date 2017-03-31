@@ -149,7 +149,7 @@ namespace Infinity {
 	infi_controller_t& infi_controller_t::doWith( infi_extension_t* ext, float64 sec ) {
 		return this -> doWith(*ext, sec);
 	}
-	infi_controller_t& infi_controller_t::doWith( infi_extension_t* ext, infi_time_stream_t& ts, float64 sec ) {
+	infi_controller_t& infi_controller_t::doWith( infi_extension_t* ext, infi_event_clock_t& ts, float64 sec ) {
 		return this -> doWith(*ext, ts, sec);
 	}
 
@@ -167,7 +167,7 @@ namespace Infinity {
 		_updatemngr_recv.extension(clock, sec, func);
 		return *this;
 	}
-	infi_controller_t& infi_controller_t::doWith( infi_extension_t& ext, infi_time_stream_t& ts, float64 sec ) {
+	infi_controller_t& infi_controller_t::doWith( infi_extension_t& ext, infi_event_clock_t& ts, float64 sec ) {
 		infi_extension_t* ext_ptr = &ext;
 		infi_update_mngr_module_t::Function func = [=](infi_controller_t& ctrl){ext_ptr -> run(ctrl);};
 		_updatemngr_recv.extension(ts, sec, func);

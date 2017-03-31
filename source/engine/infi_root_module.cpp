@@ -210,13 +210,13 @@ namespace Infinity {
 					break;
 				case SDL_WINDOWEVENT_ENTER:
 					wwin->_flags |= INFI_WINDOW_MOUSE_OVER;
-					_input.mouse.inside.push(true, wwin);
-					wwin -> input.mouse.inside.push(true, wwin);
+					_input.mouse.inside.propagate(wwin, true);
+					wwin -> input.mouse.inside.propagate(wwin, true);
 					break;
 				case SDL_WINDOWEVENT_LEAVE:
 					wwin->_flags &= ~INFI_WINDOW_MOUSE_OVER;
-					_input.mouse.inside.push(false, wwin);
-					wwin -> input.mouse.inside.push(false, wwin);
+					_input.mouse.inside.propagate(wwin, false);
+					wwin -> input.mouse.inside.propagate(wwin, false);
 					break;
 				case SDL_WINDOWEVENT_FOCUS_GAINED:
 					wwin->_flags |= INFI_WINDOW_INTERNAL_FOCUS;
@@ -269,27 +269,28 @@ namespace Infinity {
 		core::vec2i p( ev.motion.x, w->height() - ev.motion.y );
 		core::vec2i d( ev.motion.xrel, -ev.motion.yrel );
 
-		_input.mouse.position.push(p,d);
+		infi_input_events_t::mouse_data data{p,d};
+		_input.mouse.position.propagate(data, true);
 		if ( w != NULL ) {
-			w -> input.mouse.position.push(p,d);
+			w -> input.mouse.position.propagate(data, true);
 		}
 	}
 	void infi_root_module_t::__handle_mouse_down_ev( const void* evoid ) {
 		//Error::define_scope __scope__( "handle_mouse_down_ev" );
 		const SDL_Event& ev = *(const SDL_Event*)evoid;
 		infi_window_t* w = _winids[ev.motion.windowID];
-		_input.mouse[ev.button.button](true);
+		_input.mouse[ev.button.button].propagate(true);
 		if ( w != NULL ) {
-			w -> input.mouse[ev.button.button](true);
+			w -> input.mouse[ev.button.button].propagate(true);
 		}
 	}
 	void infi_root_module_t::__handle_mouse_up_ev( const void* evoid ) {
 		//Error::define_scope __scope__( "handle_mouse_up_ev" );
 		const SDL_Event& ev = *(const SDL_Event*)evoid;
 		infi_window_t* w = _winids[ev.motion.windowID];
-		_input.mouse[ev.button.button](false);
+		_input.mouse[ev.button.button].propagate(false);
 		if ( w != NULL ) {
-			w -> input.mouse[ev.button.button](false);
+			w -> input.mouse[ev.button.button].propagate(false);
 		}
 	}
 	void infi_root_module_t::__handle_mouse_wheel_ev( const void* evoid ) {
@@ -299,9 +300,9 @@ namespace Infinity {
 		
 		core::vec2i wh( ev.wheel.x, ev.wheel.y );
 
-		_input.mouse.wheel.push(wh);
+		_input.mouse.wheel.propagate(wh, true);
 		if ( w != NULL ) {
-			w -> input.mouse.wheel.push(wh);
+			w -> input.mouse.wheel.propagate(wh, true);
 		}
 	}
 

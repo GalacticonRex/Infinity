@@ -3,6 +3,11 @@
 
 namespace Infinity {
 	infi_input_events_t::__keyboard_event__::__keyboard_event__(infi_input_events_t& i, uint32 c) :
+		infi_event_trigger_t([this](bool signal) {
+			( signal ) ?
+				_source.pushKeyboard( _code ) :
+				_source.popKeyboard( _code );
+		}),
 		_code(c), _source(i) { ; }
 
 	bool infi_input_events_t::__keyboard_event__::get() const {
@@ -15,14 +20,12 @@ namespace Infinity {
 		return _source.releasedKeyboard(_code, dt);
 	}
 
-	void infi_input_events_t::__keyboard_event__::Triggered(infi_trigger_t* ev, bool value, void* data) {
-		if( value )
-			_source.pushKeyboard( _code );
-		else
-			_source.popKeyboard( _code );
-	}
-
 	infi_input_events_t::__mouse_event__::__mouse_event__(infi_input_events_t& i, uint32 c) :
+		infi_event_trigger_t([this](bool signal){
+			( signal ) ?
+				_source.pushMouse( _code ) :
+				_source.popMouse( _code );
+		}),
 		_code(c), _source(i) { ; }
 
 	bool infi_input_events_t::__mouse_event__::get() const {
@@ -35,14 +38,11 @@ namespace Infinity {
 		return _source.releasedMouse(_code, dt);
 	}
 
-	void infi_input_events_t::__mouse_event__::Triggered(infi_trigger_t* ev, bool value, void* data) {
-		if( value )
-			_source.pushMouse( _code );
-		else
-			_source.popMouse( _code );
-	}
-
 	infi_input_events_t::__mouse_position_change__::__mouse_position_change__(infi_input_events_t& i) :
+		infi_event_trigger_t<mouse_data>([this](bool signal, mouse_data& data) {
+			if ( _source._local_mouse != NULL )
+				_source._local_mouse -> push(data.position, data.delta);
+		}),
 		_source( i ) { ; }
 
 	core::vec2i infi_input_events_t::__mouse_position_change__::operator()() const {
@@ -52,14 +52,12 @@ namespace Infinity {
 		return (_source._local_mouse==NULL)?core::vec2i():_source._local_mouse -> deltaPosition(Time::Now());
 	}
 
-	void infi_input_events_t::__mouse_position_change__::push(const core::vec2i& p, const core::vec2i& d) {
-		if ( _source._local_mouse != NULL ) {
-			_source._local_mouse -> push(p,d);
-			infi_trigger_t::operator() (true);
-		}
-	}
-
 	infi_input_events_t::__mouse_inside_change__::__mouse_inside_change__(infi_input_events_t& i) :
+		infi_event_trigger_t<infi_window_t*>([this](bool signal, infi_window_t*& win){
+			( signal ) ?
+				_source._local_mouse -> push(win) :
+				_source._local_mouse -> pop(win);
+		}),
 		_source( i ) { ; }
 
 	bool infi_input_events_t::__mouse_inside_change__::operator()() const {
@@ -69,17 +67,11 @@ namespace Infinity {
 		return (_source._local_mouse==NULL)?NULL:_source._local_mouse -> window();
 	}
 
-	void infi_input_events_t::__mouse_inside_change__::push(bool p, infi_window_t* w) {
-		if ( _source._local_mouse != NULL ) {
-			if ( p )
-				_source._local_mouse -> push(w);
-			else
-				_source._local_mouse -> pop(w);
-			infi_trigger_t::operator() (p);
-		}
-	}
-
 	infi_input_events_t::__mouse_wheel_change__::__mouse_wheel_change__(infi_input_events_t& ev) :
+		infi_event_trigger_t<core::vec2i>([this](bool signal, core::vec2i& data) {
+			if ( _source._local_mouse!=NULL )
+				_source._local_mouse -> push(data);
+		}),
 		_source(ev) { ; }
 
 	int32 infi_input_events_t::__mouse_wheel_change__::operator()() const {
@@ -94,11 +86,6 @@ namespace Infinity {
 	}
 	int32 infi_input_events_t::__mouse_wheel_change__::deltaX() const {
 		return (_source._local_mouse==NULL)?0:_source._local_mouse -> deltaWheel(Time::Now()).x;
-	}
-
-	void infi_input_events_t::__mouse_wheel_change__::push(const core::vec2i& r) {
-		if ( _source._local_mouse!=NULL )
-			_source._local_mouse -> push(r);
 	}
 
 	infi_input_events_t::__mouse__::__mouse__(infi_input_events_t& ev) :

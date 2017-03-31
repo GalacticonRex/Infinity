@@ -51,7 +51,7 @@ namespace Infinity {
 		_src._renderer.flush();
 
 		( !_src._rendering -> isClosing() ) ?
-			_src._refresh_dsp(_src._rendering -> timeStream(), _src._rendering -> frameRate(), _src._rendering) :
+			_src._refresh_dsp(_src._rendering -> clock(), _src._rendering -> frameRate(), _src._rendering) :
 			_src._destroy_window_dsp(_src._rendering);
 	}
 	infi_win_mngr_interpreter_t::__destroy_window__::__destroy_window__(infi_win_mngr_interpreter_t& i) : _src(i){ ; }

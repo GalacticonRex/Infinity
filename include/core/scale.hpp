@@ -15,6 +15,13 @@ namespace core {
 		scale3_t(vec2 xy) : vec3(xy.x,xy.y,1) { ; }
 		scale3_t(vec2 xy, float32 z) : vec3(xy.x,xy.y,z) { ; }
 		scale3_t(float32 x, vec2 yz) : vec3(x,yz.x,yz.y) { ; }
+
+		scale3_t& operator= (float32 xyz) {
+			vec3::x = xyz;
+			vec3::y = xyz;
+			vec3::z = xyz;
+			return *this;
+		}
 	};
 
 }

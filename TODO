@@ -3,6 +3,6 @@
 +------------------------------------------------------------------------------+
   * blend functions (RESOLVED 20 Mar 2017)
   * stencil functions
-  * "then" functionality for render functions
-  * vertex arrays
+  * "then" functionality for render functions (RESOLVED 25 Mar 2017)
+  * vertex arrays (RESOLVED 26 Mar 2017)
   * transform feedbacks

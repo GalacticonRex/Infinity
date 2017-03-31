@@ -17,7 +17,7 @@ namespace Infinity {
 	protected:
 		infi_error_handler_t& _error;
 		infi_event_queue_t _queue;
-		infi_time_stream_t _ts;
+		infi_event_clock_t _ts;
 
 	public:
 		infi_module_base_t(const std::string&, infi_error_handler_t&);

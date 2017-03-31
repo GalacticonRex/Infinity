@@ -1,19 +1,22 @@
 #ifndef __INFI_INPUT_EVENTS_HPP__
 #define __INFI_INPUT_EVENTS_HPP__
 
-#include "threads/infi_trigger.hpp"
+#include "threads/infi_event_trigger.hpp"
 #include "engine/infi_engine_defs.hpp"
 #include "components/infi_component_defs.hpp"
 #include "components/infi_keyboard.hpp"
 
 namespace Infinity {
 	struct infi_input_events_t {
-		struct DEFINE_EXPORT __keyboard_event__ : public infi_trigger_t {
+		struct mouse_data {
+			core::vec2i position;
+			core::vec2i delta;
+		};
+
+		struct DEFINE_EXPORT __keyboard_event__ : public infi_event_trigger_t<void> {
 		private:
 			uint32 _code;
 			infi_input_events_t& _source;
-
-			void Triggered(infi_trigger_t*, bool, void*);
 
 		public:
 			__keyboard_event__(infi_input_events_t&, uint32);
@@ -23,12 +26,10 @@ namespace Infinity {
 			bool released(float64) const;
 		};
 
-		struct DEFINE_EXPORT __mouse_event__ : public infi_trigger_t {
+		struct DEFINE_EXPORT __mouse_event__ : public infi_event_trigger_t<void> {
 		private:
 			uint32 _code;
 			infi_input_events_t& _source;
-
-			void Triggered(infi_trigger_t*, bool, void*);
 
 		public:
 			__mouse_event__(infi_input_events_t&, uint32);
@@ -38,7 +39,7 @@ namespace Infinity {
 			bool released(float64) const;
 		};
 
-		struct DEFINE_EXPORT __mouse_position_change__ : public infi_trigger_t {
+		struct DEFINE_EXPORT __mouse_position_change__ : public infi_event_trigger_t<mouse_data> {
 		private:
 			infi_input_events_t& _source;
 
@@ -47,11 +48,9 @@ namespace Infinity {
 
 			core::vec2i operator()() const;
 			core::vec2i delta() const;
-
-			void push(const core::vec2i&, const core::vec2i&);
 		};
 
-		struct DEFINE_EXPORT __mouse_inside_change__ : public infi_trigger_t {
+		struct DEFINE_EXPORT __mouse_inside_change__ : public infi_event_trigger_t<infi_window_t*> {
 		private:
 			infi_input_events_t& _source;
 
@@ -60,11 +59,9 @@ namespace Infinity {
 
 			bool operator()() const;
 			infi_window_t* currentWindow() const;
-
-			void push(bool, infi_window_t*);
 		};
 
-		struct DEFINE_EXPORT __mouse_wheel_change__ : public infi_trigger_t {
+		struct DEFINE_EXPORT __mouse_wheel_change__ : public infi_event_trigger_t<core::vec2i> {
 		private:
 			infi_input_events_t& _source;
 
@@ -76,8 +73,6 @@ namespace Infinity {
 
 			int32 positionX() const;
 			int32 deltaX() const;
-
-			void push(const core::vec2i&);
 		};
 		
 	private:

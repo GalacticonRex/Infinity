@@ -1,4 +1,4 @@
-#include "render/infi_buffer_object.hpp"
+#include "render/objects/basic/infi_buffer_object.hpp"
 #include "render/gl/infi_gl.hpp"
 #include "render/gl/infi_gl_context_controller.hpp"
 #include "render/infi_renderer.hpp"
@@ -37,23 +37,15 @@ namespace Render {
 		return (gl.version > version);
 	}
 	void infi_buffer_object_t::__upload_data__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, __upload_item__& item) const {
-		//uint32 calc = item.size + item.start;
-
 		// buffer is not yet created
-		if ( !item.buffer -> _generated ) {
+		if ( item.buffer -> _generated < 2 ) {
 			gl.BufferData(
 				item.bind_point,
 				item.size,
 				item.data,
 				item.buffer -> _usage );
-			item.buffer -> _generated = true;
-		} /*else if (false) {
-			gl.BufferData(
-				item.bind_point,
-				item.size,
-				item.data,
-				item.buffer -> _usage );
-		} */else {
+			item.buffer -> _generated ++ ;
+		} else {
 			gl.BufferSubData(
 				item.bind_point,
 				item.start,
@@ -78,6 +70,8 @@ namespace Render {
 		r(_upload);
 
 		r.popBuffer(GL_COPY_WRITE_BUFFER);
+
+		_generated ++ ;
 	}
 
 	infi_buffer_object_t::Bind::Bind(infi_renderer_t& r, infi_buffer_object_t& obj, BufferBindPoint b) :
@@ -97,14 +91,14 @@ namespace Render {
 	}
 
 	infi_buffer_object_t::infi_buffer_object_t() :
-		_handle(0),
+		infi_resource_t(0),
 		_generated(false),
 		_usage(GL_STATIC_DRAW),
 		_size(0),
 		_mapping(NULL) { ; }
 
 	infi_buffer_object_t::infi_buffer_object_t(infi_renderer_t& r, BufferBindPoint type) :
-		_handle(r.createBuffer(type)),
+		infi_resource_t(r.createBuffer(type)),
 		_generated(false),
 		_usage(GL_STATIC_DRAW),
 		_size(0),
@@ -113,6 +107,10 @@ namespace Render {
 	void infi_buffer_object_t::create(infi_synchronized_renderer_t& renderer, BufferBindPoint b) {
 		infi_synchronized_renderer_t::Acquire r(renderer);
 		_handle = r -> createBuffer(b);
+	}
+
+	bool infi_buffer_object_t::ready() const {
+		return (_generated == 2);
 	}
 
 	void infi_buffer_object_t::usage(Modification mod, Usage usg) {

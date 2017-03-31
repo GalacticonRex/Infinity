@@ -82,6 +82,7 @@ namespace Render {
 		
 		void arrayBufferToVertexArray(uint32 vao, uint32 buf);
 		void indexBufferToVertexArray(uint32 vao, uint32 buf);
+		void vertexSizeToVertexArray(uint32 vao, uint32 size);
 		void enableVertexArray(uint32 vao, uint32 index, uint32 count, uint32 type, uint32 offset);
 		void disableVertexArray(uint32 vao, uint32 index);
 

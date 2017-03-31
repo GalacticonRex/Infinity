@@ -86,33 +86,28 @@ void infi_vertex_array_bindings_t::unset(uint32 index) {
 }
 
 void infi_vertex_array_bindings_t::synchronizeTo(const infi_gl_t& gl, infi_gl_shared_t& shr, infi_vertex_array_bindings_t& vao) {
-	std::cerr << "sync vertex array" << std::endl;
+	vertex_size = vao.vertex_size;
 
-	std::cerr << "array buffer: " << array_buffer_handle << " vs. " << vao.array_buffer_handle << std::endl;
 	if ( vao.array_buffer_handle != array_buffer_handle) {
 		gl.BindBuffer(GL_ARRAY_BUFFER, shr.buffer(vao.array_buffer_handle));
 		array_buffer_handle = vao.array_buffer_handle;
 	}
 	
-	std::cerr << "index buffer: " << index_buffer_handle << " vs. " << vao.index_buffer_handle << std::endl;
 	if ( vao.index_buffer_handle != index_buffer_handle) {
 		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, shr.buffer(vao.index_buffer_handle));
 		index_buffer_handle = vao.index_buffer_handle;
 	}
 
-	std::cerr << "binding sizes: " << vao.bindings.size() << ", " << bindings.size() << std::endl;
 	uint32 sz = bindings.size();
 	uint32 i = 0;
 	for ( ;i<vao.bindings.size();i++ ) {
-		std::cerr << "checking binding " << i << std::endl;
 		if( sz <= i  || vao.bindings[i].enabled != bindings[i].enabled ||
 						vao.bindings[i].count != bindings[i].count ||
 						vao.bindings[i].type != bindings[i].type ) {
-			std::cerr << "updating binding: " << i << std::endl;
 			if ( vao.bindings[i].enabled ) {
 				__binding__& b = vao.bindings[i];
 				gl.EnableVertexAttribArray(i);
-				gl.VertexAttribPointer(i, b.count, b.type, false, vertex_size, (void*)(std::size_t)b.offset );
+				gl.VertexAttribPointer(i, b.count, b.type, false, vao.vertex_size, (void*)(std::size_t)b.offset );
 			} else
 				gl.DisableVertexAttribArray(i);
 

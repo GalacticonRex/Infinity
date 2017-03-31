@@ -103,8 +103,51 @@ namespace Infinity {
 		_data.hidden = false;
 		_data.true_on_zero = false;
 		_data.direction = 0;
-		_data.signalled = 0;
+		_data.signalled = false;
 		_data.count = 0;
+	}
+	infi_trigger_t::infi_trigger_t( bool init ) {
+		__generate_hash();
+		_data.hidden = false;
+		_data.true_on_zero = false;
+		_data.direction = 0;
+		_data.signalled = init;
+		_data.count = 0;
+	}
+
+	infi_trigger_t::infi_trigger_t( const infi_trigger_t& other ) :
+		_output(other._output),
+		_input(other._input) {
+		
+		__generate_hash();
+		_data.hidden = other._data.hidden;
+		_data.true_on_zero = other._data.true_on_zero;
+		_data.direction = other._data.direction;
+		_data.signalled = other._data.signalled;
+		_data.count = other._data.count;
+
+		iterator iter;
+		for (iter=_input.begin();iter!=_input.end();iter++)
+			(*iter)->__add_output(this);
+		for (iter=_output.begin();iter!=_output.end();iter++)
+			(*iter)->__add_input(this);
+	}
+	infi_trigger_t::infi_trigger_t( infi_trigger_t&& moving ) :
+		_output(moving._output),
+		_input(moving._input) {
+		
+		__generate_hash();
+		_data.hidden = moving._data.hidden;
+		_data.true_on_zero = moving._data.true_on_zero;
+		_data.direction = moving._data.direction;
+		_data.signalled = moving._data.signalled;
+		_data.count = moving._data.count;
+
+		iterator iter;
+		for (iter=_input.begin();iter!=_input.end();iter++)
+			(*iter)->__add_output(this);
+		for (iter=_output.begin();iter!=_output.end();iter++)
+			(*iter)->__add_input(this);
 	}
 
 	infi_trigger_t::~infi_trigger_t() {
@@ -118,40 +161,8 @@ namespace Infinity {
 	std::size_t infi_trigger_t::gethash() const {
 		return _hash_value;
 	}
-
-	infi_trigger_t& infi_trigger_t::operator& (infi_trigger_t& ev) {
-		if( ev.__is_and() ) {
-			ev.__add_input(this);
-			return ev;
-		} else {
-			infi_trigger_t* gen = new infi_trigger_t();
-			gen->_data.hidden = true;
-			gen->__set_and();
-			this->add(*gen);
-			ev.add(*gen);
-			return *gen;
-		}
-	}
-	infi_trigger_t& infi_trigger_t::operator| (infi_trigger_t& ev) {
-		if( ev.__is_or() ) {
-			ev.__add_input(this);
-			return ev;
-		} else {
-			infi_trigger_t* gen = new infi_trigger_t();
-			gen->_data.hidden = true;
-			gen->__set_or();
-			this->add(*gen);
-			ev.add(*gen);
-			return *gen;
-		}
-	}
-	infi_trigger_t& infi_trigger_t::operator! () {
-		infi_trigger_t* ev = new infi_trigger_t();
-		ev->_data.hidden = true;
-		ev->_data.direction = _data.direction;
-		ev->_data.true_on_zero = !_data.true_on_zero;
-		this->add(*ev);
-		return *ev;
+	bool infi_trigger_t::isSignalled() const {
+		return _data.signalled;
 	}
 
 	// send
@@ -166,34 +177,12 @@ namespace Infinity {
 		}
 		return false;
 	}
-
-	void infi_trigger_t::operator() (bool sig, void* data) {
+	void infi_trigger_t::run(bool sig, void* data) {
 		if ( _input.empty() )
 			_data.signalled = sig;
 		this->Triggered(this, sig, data);
 		for (iterator iter=_output.begin();iter!=_output.end();iter++)
 			(*iter)->__handle_input(this, sig, data);
-	}
-	infi_trigger_t::operator bool () const {
-		return _data.signalled;
-	}
-
-	// receive
-	infi_trigger_t& infi_trigger_t::when( infi_trigger_t& ev ) {
-		__add_input(&ev);
-		ev.__add_output(this);
-		return ev;
-	}
-	infi_trigger_t& infi_trigger_t::unwhen( infi_trigger_t& ev ) {
-		__remove_input(&ev);
-		ev.__remove_output(this);
-		return ev;
-	}
-
-	void infi_trigger_t::Triggered(infi_trigger_t* sender, bool sig, void* data) { ; }
-
-	void infi_trigger_t::debug() const {
-		//__WriteError__("DEBUG " << this << ": " << _data.signalled << ", " << _data.count);
 	}
 
 }

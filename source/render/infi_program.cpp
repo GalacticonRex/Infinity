@@ -1,6 +1,6 @@
-#include "render/infi_program.hpp"
+#include "render/objects/basic/infi_program.hpp"
 #include "render/gl/infi_gl_context_controller.hpp"
-#include "render/infi_buffer_object.hpp"
+#include "render/objects/basic/infi_buffer_object.hpp"
 #include "render/infi_sync_renderer.hpp"
 
 namespace Infinity {
@@ -111,6 +111,8 @@ namespace Render {
 		}
 
 		program.format = infi_vertex_format_t(attr);
+
+		program._linked ++ ;
 	}
 
 	bool infi_program_t::__assign_uniform_int1__::compatible(const infi_gl_t& gl) const {
@@ -120,6 +122,13 @@ namespace Render {
 	void infi_program_t::__assign_uniform_int1__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, data_item& data) const {
 		gl.Uniformi(data.source -> __get_uniform(data.name), data.data);
 	}
+	bool infi_program_t::__assign_uniform_int1v__::compatible(const infi_gl_t& gl) const {
+		infi_gl_version_t version(2,0);
+		return (gl.version > version);
+	}
+	void infi_program_t::__assign_uniform_int1v__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, data_item& data) const {
+		gl.Uniformiv(data.source -> __get_uniform(data.name), data.count, data.data);
+	}
 
 	bool infi_program_t::__assign_uniform_float1__::compatible(const infi_gl_t& gl) const {
 		infi_gl_version_t version(2,0);
@@ -128,6 +137,14 @@ namespace Render {
 	void infi_program_t::__assign_uniform_float1__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, data_item& data) const {
 		gl.Uniformf(data.source -> __get_uniform(data.name), data.data);
 	}
+	bool infi_program_t::__assign_uniform_float1v__::compatible(const infi_gl_t& gl) const {
+		infi_gl_version_t version(2,0);
+		return (gl.version > version);
+	}
+	void infi_program_t::__assign_uniform_float1v__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, data_item& data) const {
+		gl.Uniformfv(data.source -> __get_uniform(data.name), data.count, data.data);
+	}
+
 	bool infi_program_t::__assign_uniform_float2__::compatible(const infi_gl_t& gl) const {
 		infi_gl_version_t version(2,0);
 		return (gl.version > version);
@@ -215,10 +232,19 @@ namespace Render {
 		_program._assign_int1.push(_renderer.state(), {&_program, name, data});
 		_renderer(_program._assign_int1);
 	}
+	void infi_program_t::Bind::uniformiv(const std::string& name, uint32 count, int32* data) {
+		_program._assign_int1v.push(_renderer.state(), {&_program, name, count, data});
+		_renderer(_program._assign_int1v);
+	}
 	void infi_program_t::Bind::uniform(const std::string& name, float32 data) {
 		_program._assign_float1.push(_renderer.state(), {&_program, name, data});
 		_renderer(_program._assign_float1);
 	}
+	void infi_program_t::Bind::uniformv(const std::string& name, uint32 count, float32* data) {
+		_program._assign_float1v.push(_renderer.state(), {&_program, name, count, data});
+		_renderer(_program._assign_float1v);
+	}
+
 	void infi_program_t::Bind::uniform(const std::string& name, const core::vec2& data) {
 		_program._assign_float2.push(_renderer.state(), {&_program, name, data});
 		_renderer(_program._assign_float2);
@@ -283,13 +309,13 @@ namespace Render {
 	}
 
 	infi_program_t::infi_program_t() :
-		_linked(false),
-		_handle(0),
+		infi_resource_t(0),
+		_linked(0),
 		vertex(NULL),
 		fragment(NULL) { ; }
 	infi_program_t::infi_program_t(infi_renderer_t& r) :
-		_linked(false),
-		_handle(r.createProgram()),
+		infi_resource_t(r.createProgram()),
+		_linked(0),
 		vertex(NULL),
 		fragment(NULL) { ; }
 
@@ -298,8 +324,12 @@ namespace Render {
 		_handle = r -> createProgram();
 	}
 
+	bool infi_program_t::ready() const {
+		return (_linked == 2);
+	}
+
 	infi_render_async_t infi_program_t::link(infi_renderer_t& r) {
-		if ( _linked ) {
+		if ( _linked != 0 ) {
 			//Error::define_scope __scope__("infi_program_t.link");
 			Error::send<Error::Fatality::Method>(
 				Error::Type::Init,
@@ -316,7 +346,7 @@ namespace Render {
 		_linker.push(r.state(), this);
 		infi_render_async_t next(r, _linker);
 
-		_linked = true;
+		_linked ++ ;
 
 		return next;
 	}

@@ -18,7 +18,7 @@ namespace Infinity {
 		_time(0.0),
 		_data({0,NULL}) { ; }
 
-	infi_event_queue_t::message_t::message_t(const infi_time_stream_t& str, float64 w, message d) :
+	infi_event_queue_t::message_t::message_t(const infi_event_clock_t& str, float64 w, message d) :
 		_start_global(Time::Now()),
 		_start_stream(str.globalToLocal(_start_global)),
 		_time(w),
@@ -41,15 +41,15 @@ namespace Infinity {
 		return (A->_logged_value < B->_logged_value);
 	}
 
-	infi_event_queue_t::stream_ref_t::stream_ref_t(const infi_time_stream_t* str) :
+	infi_event_queue_t::stream_ref_t::stream_ref_t(const infi_event_clock_t* str) :
 		_source(str),
 		_index(-1),
 		_logged_value(Time::Point::max()) { ; }
 
-	void infi_event_queue_t::stream_ref_t::rebind(const infi_time_stream_t* str) {
+	void infi_event_queue_t::stream_ref_t::rebind(const infi_event_clock_t* str) {
 		_source = str;
 	}
-	const infi_time_stream_t* infi_event_queue_t::stream_ref_t::stream() const {
+	const infi_event_clock_t* infi_event_queue_t::stream_ref_t::stream() const {
 		return _source;
 	}
 	Time::Point infi_event_queue_t::stream_ref_t::waitUntil() const {
@@ -185,7 +185,7 @@ namespace Infinity {
 		return ret;
 	}
 
-	infi_event_queue_t::stream_ref_t* infi_event_queue_t::stream_heap_t::_get(infi_time_stream_t* str) {
+	infi_event_queue_t::stream_ref_t* infi_event_queue_t::stream_heap_t::_get(infi_event_clock_t* str) {
 		stream_ref_t*& msgs = _mapping[str];
 		if ( msgs == NULL ) {
 			if ( _available.empty() ) {
@@ -194,14 +194,24 @@ namespace Infinity {
 			} else {
 				msgs = _available.top();
 				_available.pop();
-				msgs->rebind(str);
+				msgs -> rebind(str);
 			}
 			this->_push(msgs);
 		}
 		return msgs;
 	}
 
-	infi_event_queue_t::stream_heap_t::stream_heap_t() {
+	infi_event_queue_t::stream_heap_t::stream_heap_t() :
+		infi_event_trigger_t([this](bool sig, infi_event_clock_t*& ts) {
+			if ( sig ) {
+				std::lock_guard<std::mutex> lk(_lock);
+				stream_ref_t* sr = _mapping[ts];
+				if ( sr != NULL ) {
+					sr->calculateValue();
+					this->_verify(sr);
+				}
+			}
+		}) {
 		std::lock_guard<std::mutex> lk(_lock);
 	}
 	infi_event_queue_t::stream_heap_t::~stream_heap_t() {
@@ -218,7 +228,7 @@ namespace Infinity {
 		_immediate.push(msg);
 		_condition.notify_all();
 	}
-	void infi_event_queue_t::stream_heap_t::push(infi_time_stream_t* str, message_t msg) {
+	void infi_event_queue_t::stream_heap_t::push(infi_event_clock_t* str, message_t msg) {
 		std::lock_guard<std::mutex> lk(_lock);
 
 		stream_ref_t* msgs = this->_get(str);
@@ -263,24 +273,12 @@ namespace Infinity {
 		return msg.data();
 	}
 
-	void infi_event_queue_t::stream_heap_t::Triggered(infi_trigger_t* sender, bool sig, void* data) {
-		if ( sig ) {
-			std::lock_guard<std::mutex> lk(_lock);
-			infi_time_stream_t* ts = (infi_time_stream_t*)data;
-			stream_ref_t* sr = _mapping[ts];
-			if ( sr != NULL ) {
-				sr->calculateValue();
-				this->_verify(sr);
-			}
-		}
-	}
-
 	infi_event_queue_t::infi_event_queue_t() { ; }
 	infi_event_queue_t::~infi_event_queue_t() { ; }
 	void infi_event_queue_t::write(infi_event_queue_t::message msg) {
 		_streams.pushImmediate(msg);
 	}
-	void infi_event_queue_t::write(infi_time_stream_t& str, float64 w, infi_event_queue_t::message msg) {
+	void infi_event_queue_t::write(infi_event_clock_t& str, float64 w, infi_event_queue_t::message msg) {
 		_streams.push(&str, message_t(str,w,msg));
 	}
 	infi_event_queue_t::message infi_event_queue_t::read() {

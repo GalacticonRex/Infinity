@@ -4,11 +4,12 @@
 #include "render/gl/infi_gl_defs.hpp"
 #include "render/infi_render_defs.hpp"
 #include "render/gl/infi_gl_command.hpp"
+#include "render/infi_render_resource.hpp"
 
 namespace Infinity {
 namespace Render {
 
-	struct infi_buffer_object_t {
+	struct infi_buffer_object_t : public infi_resource_t {
 	private:
 		struct __upload_item__ {
 			infi_buffer_object_t* buffer;
@@ -28,13 +29,11 @@ namespace Render {
 		public:
 			bool compatible(const infi_gl_t&) const;
 			void run(const infi_gl_t&, infi_gl_context_controller_t&, __upload_item__&) const;
-		} _upload;
+		} _upload;	
 
 		void __upload(infi_renderer_t&, uint32, uint32, uint8*);
 
-		uint32 _handle;
-
-		bool _generated;
+		uint8 _generated;
 		uint32 _usage;
 		uint32 _size;
 		uint8* _mapping;
@@ -78,6 +77,7 @@ namespace Render {
 		infi_buffer_object_t(infi_renderer_t&, BufferBindPoint);
 
 		void create(infi_synchronized_renderer_t&, BufferBindPoint);
+		bool ready() const;
 
 		void usage(Modification, Usage);
 		

@@ -150,6 +150,7 @@ namespace Render {
 
 		void arrayBufferToVertexArray(uint32 vao, uint32 buf);
 		void indexBufferToVertexArray(uint32 vao, uint32 buf);
+		void vertexSizeToVertexArray(uint32 vao, uint32 size);
 		void enableVertexArray(uint32 vao, uint32 index, uint32 count, uint32 type, uint32 offset);
 		void disableVertexArray(uint32 vao, uint32 index);
 		
@@ -174,6 +175,9 @@ namespace Render {
 
 		void pushBlendEquation(const infi_gl_t&, const infi_blend_equation_bindings_t&);
 		void popBlendEquation(const infi_gl_t&);
+
+		// Stencil Functions
+		
 	};
 
 } }

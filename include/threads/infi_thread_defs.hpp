@@ -5,7 +5,7 @@
 
 namespace Infinity {
 	struct DEFINE_EXPORT infi_event_queue_t;
-	struct DEFINE_EXPORT infi_time_stream_t;
+	struct DEFINE_EXPORT infi_event_clock_t;
 	struct DEFINE_EXPORT infi_trigger_t;
 	struct DEFINE_EXPORT infi_threadable_t;
 }

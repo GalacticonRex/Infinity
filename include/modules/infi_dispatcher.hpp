@@ -27,7 +27,7 @@ namespace Infinity {
 			_queue.write({Code,&allocd});
 		}
 
-		void operator()(infi_time_stream_t& ts, float64 sec, const State& st) {
+		void operator()(infi_event_clock_t& ts, float64 sec, const State& st) {
 			State& allocd = _queue.template push<State>(st);
 			_queue.write(ts, sec, {Code,&allocd});
 		}

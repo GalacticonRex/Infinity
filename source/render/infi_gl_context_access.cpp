@@ -57,7 +57,6 @@ namespace Render {
 		return (gl.version > version);
 	}
 	void infi_gl_context_access_t::__bind_vertex_array__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, vao_ptr& data) const {
-		std::cerr << "bind vertex array" << std::endl;
 		if ( data == NULL ) {
 			gl.BindVertexArray(0);
 		} else {
@@ -361,8 +360,12 @@ namespace Render {
 		vao_ptr vao_p = _vertex_arrays[vao];
 		vao_p -> index_buffer_handle = buf;
 	}
+	void infi_gl_context_access_t::vertexSizeToVertexArray(uint32 vao, uint32 size) {
+		std::lock_guard<std::mutex> lk(_vertex_arrays.lock);
+		vao_ptr vao_p = _vertex_arrays[vao];
+		vao_p -> vertexSize( size );
+	}
 	void infi_gl_context_access_t::enableVertexArray(uint32 vao, uint32 index, uint32 count, uint32 type, uint32 offset) {
-		std::cerr << "enable vertex array" << std::endl;
 		std::lock_guard<std::mutex> lk(_vertex_arrays.lock);
 		vao_ptr vao_p = _vertex_arrays[vao];
 		vao_p -> set(index, count, type, offset);

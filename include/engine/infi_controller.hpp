@@ -53,7 +53,7 @@ namespace Infinity {
 		infi_update_mngr_module_t::extension& extendWith;
 		infi_display_list_t& displays;
 		infi_input_events_t& input;
-		infi_time_stream_t clock;
+		infi_event_clock_t clock;
 
 		infi_controller_t(infi_lib_init_t&);
 		~infi_controller_t();
@@ -65,11 +65,11 @@ namespace Infinity {
 
 		infi_controller_t& doWith( infi_extension_t* );
 		infi_controller_t& doWith( infi_extension_t*, float64 );
-		infi_controller_t& doWith( infi_extension_t*, infi_time_stream_t&, float64 );
+		infi_controller_t& doWith( infi_extension_t*, infi_event_clock_t&, float64 );
 		
 		infi_controller_t& doWith( infi_extension_t& );
 		infi_controller_t& doWith( infi_extension_t&, float64 );
-		infi_controller_t& doWith( infi_extension_t&, infi_time_stream_t&, float64 );
+		infi_controller_t& doWith( infi_extension_t&, infi_event_clock_t&, float64 );
 
 		void abort();
 		void run();

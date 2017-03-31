@@ -4,16 +4,20 @@
 #include "core/convert.hpp"
 #include "core/transform.hpp"
 
+#include "components/infi_rate.hpp"
+#include "components/infi_clock.hpp"
+#include "components/function/infi_event_rate.hpp"
+
 #include "engine/infi_lib_init.hpp"
 #include "engine/infi_controller.hpp"
 
-#include "render/infi_blend_func.hpp"
-#include "render/infi_framebuffer.hpp"
-#include "render/infi_program.hpp"
-#include "render/infi_buffer_object.hpp"
-#include "render/infi_texture.hpp"
-#include "render/infi_vertex_format.hpp"
-#include "render/infi_vertices.hpp"
+#include "render/objects/basic/infi_blend_func.hpp"
+#include "render/objects/basic/infi_framebuffer.hpp"
+#include "render/objects/basic/infi_program.hpp"
+#include "render/objects/basic/infi_buffer_object.hpp"
+#include "render/objects/basic/infi_texture.hpp"
+#include "render/objects/basic/infi_vertex_format.hpp"
+#include "render/objects/basic/infi_vertex_array.hpp"
 #include "render/infi_sync_renderer.hpp"
 
 namespace Infinity {
@@ -22,9 +26,26 @@ namespace Infinity {
 	typedef infi_window_t Window;
 	typedef infi_renderable_t Renderable;
 	typedef infi_extension_t Extension;
-	typedef infi_trigger_t Trigger;
+	
+	template<typename _T>
+	using Trigger = infi_event_trigger_t<_T>;
 
 	typedef infi_threadable_t Thread;
+
+	typedef infi_clock_t Clock;
+	typedef infi_event_clock_t EventClock;
+
+	template<typename _T,
+			 typename _RateActive = core::constant<_T>,
+			 typename _RateInactive = core::constant<_T>,
+			 typename _Conv = _T>
+	using EventRate = infi_event_rate_t<_T, _RateActive, _RateInactive, _Conv>;
+
+	template<typename _T,
+			 typename _Func,
+			 typename _Rate = infi_event_clock_t,
+			 typename _Conv = _T>
+	using Rate = infi_rate_t<_T, _Func, _Rate, _Conv>;
 
 	typedef Render::infi_renderer_t Renderer;
 	typedef Render::infi_synchronized_renderer_t MultithreadedRenderer;
@@ -45,7 +66,7 @@ namespace Infinity {
 	typedef Render::infi_texture_t Texture;
 	typedef Render::infi_vertex_format_t VertexFormat;
 	typedef Render::infi_blend_func_t Blender;
-	typedef Render::infi_vertices_t Vertices;
+	typedef Render::infi_vertex_array_t VertexArray;
 }
 
 #endif//__INFINITY_H__
