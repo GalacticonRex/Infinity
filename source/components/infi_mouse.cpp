@@ -10,7 +10,7 @@ namespace Infinity {
 
 	infi_mouse_buffer_t::infi_mouse_buffer_t( uint32 sz ) :
 		infi_key_buffer_t( sz ),
-		_inside_window( NULL ),
+		_inside_window( nullptr ),
 		_pos_time( Time::Now() ),
 		_wheel_time ( Time::Now() ),
 		_enter_time( Time::Now() ),
@@ -22,7 +22,7 @@ namespace Infinity {
 		_enter_time = t;
 	}
 	void infi_mouse_buffer_t::push_leave( infi_window_t* w, Time::Point t ) {
-		_inside_window = NULL;
+		_inside_window = nullptr;
 		_leave_time = t;
 	}
 	void infi_mouse_buffer_t::push_move( core::vec2i pos, core::vec2i rel, Time::Point t ) {
@@ -40,7 +40,7 @@ namespace Infinity {
 		return _inside_window;
 	}
 	bool infi_mouse_buffer_t::inside() const {
-		return (_inside_window!=NULL);
+		return (_inside_window!=nullptr);
 	}
 
 	const core::vec2i& infi_mouse_buffer_t::position() const {

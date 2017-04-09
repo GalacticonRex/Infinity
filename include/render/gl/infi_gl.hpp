@@ -31,6 +31,11 @@ namespace Render {
 		static uint32 sizeOf(ShaderAttribType);
 		static bool getComponents(ShaderAttribType, AttribType&, uint32&);
 
+		template<typename _T>
+		static bool getComponents(AttribType&, uint32&) {
+			return false;
+		}
+
 		infi_gl_t( infi_gl_init_t&, std::ofstream& );
 
 		const infi_gl_info_t extensions;
@@ -271,7 +276,7 @@ namespace Render {
 		static ShaderAttribType DOUBLE_MAT4;
 		static ShaderAttribType DOUBLE_MAT2x3;
 		static ShaderAttribType DOUBLE_MAT2x4;
-		static ShaderAttribType DOUBLE_MAT3x2;
+		static ShaderAttribType DOUBLE_MAT3x2; 
 		static ShaderAttribType DOUBLE_MAT3x4;
 		static ShaderAttribType DOUBLE_MAT4x2;
 		static ShaderAttribType DOUBLE_MAT4x3;
@@ -304,6 +309,25 @@ namespace Render {
 		static BufferBindPoint TRANSFORM_FEEDBACK_BUFFER;
 		static BufferBindPoint UNIFORM_BUFFER;
 	};
+
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<float32>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec2>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec3>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec4>(AttribType&, uint32&);
+
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<int32>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec2i>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec3i>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec4i>(AttribType&, uint32&);
+
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<uint32>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec2ui>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec3ui>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::vec4ui>(AttribType&, uint32&);
+
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::mat2>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::mat3>(AttribType&, uint32&);
+	template<> bool DEFINE_EXPORT infi_gl_t::getComponents<core::mat4>(AttribType&, uint32&);
 
 } }
 

@@ -1,8 +1,14 @@
  --- BEGIN INITIALIZING OPENGL ELEMENTS -----------------
                 TIME | OPERATION
  --- DONE INITIALIZING OPENGL ELEMENTS -----------------
- --- ENABLED GL TRACE @ 1.00446e-012 -----------------
+ --- ENABLED GL TRACE @ 1.50347e-012 -----------------
                 TIME | OPERATION
+          0.00000000 | glGenBuffers(1, 0000000001e7532c)
+          0.00000000 | glBindBuffer(GL_ARRAY_BUFFER, 1)
+          0.00000000 | glBindBuffer(GL_COPY_WRITE_BUFFER, 1)
+          0.00000000 | glBufferData(GL_COPY_WRITE_BUFFER, 8, 0000000001e787f0, GL_STATIC_DRAW)
+          0.00000000 | glBindBuffer(GL_COPY_WRITE_BUFFER, 0)
+          0.00000000 | glBindBuffer(GL_ARRAY_BUFFER, 0)
           0.00000000 | glEnable(GL_TEXTURE_2D)
           0.00000000 | glEnable(GL_BLEND)
           0.00000000 | glEnable(GL_DEPTH_TEST)
@@ -10,6 +16,16 @@
           0.00000000 | glEnable(GL_CULL_FACE)
           0.00000000 | glShadeModel(GL_SMOOTH)
           0.00000000 | glDepthFunc(GL_LEQUAL)
+          0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)
+          0.00000000 | glClear(4500)
+          0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)
+          0.00000000 | glClear(4500)
+          0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)
+          0.00000000 | glClear(4500)
+          0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)
+          0.00000000 | glClear(4500)
+          0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)
+          0.00000000 | glClear(4500)
           0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)
           0.00000000 | glClear(4500)
           0.00000000 | glClearColor(0.000000, 0.000000, 0.000000, 1.000000)

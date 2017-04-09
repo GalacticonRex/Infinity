@@ -14,7 +14,7 @@ namespace Infinity {
 			: _queue(m.exposeQueue()) { ; }
 			
 		void operator()() {
-			_queue.write({0,NULL});
+			_queue.write({0,nullptr});
 		}
 	};
 

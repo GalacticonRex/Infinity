@@ -67,7 +67,7 @@ public:
 	// send
 	void add(infi_trigger_t&);
 	bool remove(infi_trigger_t&);
-	void run(bool = true, void* = NULL);
+	void run(bool = true, void* = nullptr);
 };
 
 }

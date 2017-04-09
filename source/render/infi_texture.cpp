@@ -115,7 +115,7 @@ namespace Render {
 	void infi_texture_t::__jpeg_loader__::__make_stream(j_decompress_ptr cinfo, std::istream* in) {
 		__stream__ * src;
 
-		if (cinfo->src == NULL)
+		if (cinfo->src == nullptr)
 		{   
 			cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(__stream__));
 			src = reinterpret_cast<__stream__*> (cinfo->src);
@@ -131,7 +131,7 @@ namespace Render {
 		src->pub.resync_to_restart = jpeg_resync_to_restart;
 		src->stream = in;
 		src->pub.bytes_in_buffer = 0;
-		src->pub.next_input_byte = NULL;
+		src->pub.next_input_byte = nullptr;
 	}
 
 	void infi_texture_t::__jpeg_loader__::Load(infi_controller_t& ctrl, std::ifstream& input) {
@@ -224,10 +224,10 @@ namespace Render {
 			);
 		}
 
-		//Here we create the png read struct. The 3 NULL's at the end can be used
+		//Here we create the png read struct. The 3 nullptr's at the end can be used
 		//for your own custom error handling functions, but we'll just use the default.
-		//if the function fails, NULL is returned. Always check the return values!
-		png_structp pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+		//if the function fails, nullptr is returned. Always check the return values!
+		png_structp pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 		if (!pngPtr) {
 			Error::send<Error::Fatality::Method>(
 				Error::Type::CannotReadFile,
@@ -248,14 +248,14 @@ namespace Render {
 
 		//Here I've defined 2 pointers up front, so I can use them in error handling.
 		//I will explain these 2 later. Just making sure these get deleted on error.
-		png_bytep* rowPtrs = NULL;
-		char* data = NULL;
+		png_bytep* rowPtrs = nullptr;
+		char* data = nullptr;
 
 		if (setjmp(png_jmpbuf(pngPtr))) {
 			//An error occured, so clean up what we have allocated so far...
 			png_destroy_read_struct(&pngPtr, &infoPtr, (png_infopp)0);
-			if (rowPtrs != NULL) delete [] rowPtrs;
-			if (data != NULL) delete [] data;
+			if (rowPtrs != nullptr) delete [] rowPtrs;
+			if (data != nullptr) delete [] data;
 
 			Error::send<Error::Fatality::Method>(
 				Error::Type::Failed,
@@ -432,9 +432,8 @@ namespace Render {
 
 	}
 
-	void infi_texture_t::create(infi_synchronized_renderer_t& renderer) {
-		infi_synchronized_renderer_t::Acquire r(renderer);
-		_handle = r -> createTexture();
+	void infi_texture_t::create(infi_renderer_t& r) {
+		_handle = r.createTexture();
 	}
 
 	bool infi_texture_t::ready() const {

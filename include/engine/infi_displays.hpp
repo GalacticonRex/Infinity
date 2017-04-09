@@ -17,7 +17,7 @@ namespace Infinity {
 			void* driver;
 		};
 
-		infi_display_list_t(infi_lib_init_t&);
+		infi_display_list_t(const infi_lib_init_t&);
 		uint32 count() const;
 		operator uint32 () const;
 		const display& operator[] ( uint32 ) const;

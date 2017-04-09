@@ -33,7 +33,7 @@ namespace Render {
 		infi_framebuffer_t(infi_renderer_t&);
 		infi_framebuffer_t(infi_renderer_t&, const core::rgba_t&);
 
-		void create(infi_synchronized_renderer_t&);
+		void create(infi_renderer_t&);
 		bool ready() const;
 		
 		const core::vec2i& dimensions() const;

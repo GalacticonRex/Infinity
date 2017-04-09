@@ -28,14 +28,14 @@ namespace Render {
 	}
 
 	infi_render_2d_t::infi_render_2d_t() :
-		_renderer(NULL) { ; }
+		_renderer(nullptr) { ; }
 	infi_render_2d_t::infi_render_2d_t(infi_renderer_t& r) :
 		_renderer(&r) {
 		__initialize(r);
 	}
 
 	void infi_render_2d_t::setRenderer(infi_renderer_t& r) {
-		if ( _renderer == NULL )
+		if ( _renderer == nullptr )
 			__initialize(r);
 		_renderer = &r;
 	}

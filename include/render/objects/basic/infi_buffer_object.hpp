@@ -4,6 +4,7 @@
 #include "render/gl/infi_gl_defs.hpp"
 #include "render/infi_render_defs.hpp"
 #include "render/gl/infi_gl_command.hpp"
+#include "render/infi_render_async.hpp"
 #include "render/infi_render_resource.hpp"
 
 namespace Infinity {
@@ -31,7 +32,7 @@ namespace Render {
 			void run(const infi_gl_t&, infi_gl_context_controller_t&, __upload_item__&) const;
 		} _upload;	
 
-		void __upload(infi_renderer_t&, uint32, uint32, uint8*);
+		infi_render_async_t __upload(infi_renderer_t&, uint32, uint32, uint8*);
 
 		uint8 _generated;
 		uint32 _usage;
@@ -60,15 +61,17 @@ namespace Render {
 			Bind(infi_renderer_t&, infi_buffer_object_t&, BufferBindPoint);
 			~Bind();
 
+			infi_render_async_t raw_upload(uint32 bytes, void* data);
+
 			template<typename _T, uint32 _N>
-			void upload(_T* data) {
-				_buffer.__upload(_renderer, 0, sizeof(_T)*_N, (uint8*)data);
+			infi_render_async_t upload(_T* data) {
+				return _buffer.__upload(_renderer, 0, sizeof(_T)*_N, (uint8*)data);
 			}
 			template<typename _T, uint32 _N>
-			void upload(uint32 offset, _T* data) {
-				_buffer.__upload(_renderer, offset, sizeof(_T)*_N, (uint8*)data);
+			infi_render_async_t upload(uint32 offset, _T* data) {
+				return _buffer.__upload(_renderer, offset, sizeof(_T)*_N, (uint8*)data);
 			}
-			void download(uint8*&);
+			infi_render_async_t download(uint8*&);
 
 			uint8& operator[](uint32);
 		};
@@ -76,7 +79,7 @@ namespace Render {
 		infi_buffer_object_t();
 		infi_buffer_object_t(infi_renderer_t&, BufferBindPoint);
 
-		void create(infi_synchronized_renderer_t&, BufferBindPoint);
+		void create(infi_renderer_t&, BufferBindPoint);
 		bool ready() const;
 
 		void usage(Modification, Usage);

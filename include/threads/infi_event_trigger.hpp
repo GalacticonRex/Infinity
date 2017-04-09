@@ -149,10 +149,10 @@ namespace Infinity {
 		}
 
 		void operator() (bool signal = true) {
-			run(signal, NULL);
+			run(signal, nullptr);
 		}
 		void propagate(bool signal = true) {
-			run(signal, NULL);
+			run(signal, nullptr);
 		}
 		operator bool () const {
 			return isSignalled();

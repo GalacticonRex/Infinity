@@ -44,9 +44,8 @@ namespace Render {
 			_clear_color(c),
 			_dimensions(0,0) { ; }
 
-		void infi_framebuffer_t::create(infi_synchronized_renderer_t& renderer) {
-			infi_synchronized_renderer_t::Acquire r(renderer);
-			_handle = r -> createFramebuffer();
+		void infi_framebuffer_t::create(infi_renderer_t& r) {
+			_handle = r.createFramebuffer();
 		}
 
 		bool infi_framebuffer_t::ready() const {

@@ -159,7 +159,7 @@ namespace Render {
 				_renderer.popTexture(_active);
 			}
 
-			void copyFormat(const infi_texture_t& t, const _Upload* data = NULL) {
+			void copyFormat(const infi_texture_t& t, const _Upload* data = nullptr) {
 				_texture._dimensions = t._dimensions;
 				_texture._format = t._format;
 				_texture.__upload_data(_renderer, infi_texture_t::Format<_Upload>::Type(), (void*)data);
@@ -196,7 +196,7 @@ namespace Render {
 		infi_texture_t(infi_renderer_t&);
 		~infi_texture_t();
 
-		void create(infi_synchronized_renderer_t&);
+		void create(infi_renderer_t&);
 		bool ready() const;
 
 		template<infi_threadable_t::Operation _Eval=infi_threadable_t::Parallel>

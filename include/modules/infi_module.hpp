@@ -40,7 +40,7 @@ namespace Infinity {
 
 		infi_module_t(const std::string& str, infi_error_handler_t& hnd) :
 			infi_module_base_t(str, hnd),
-			_process(NULL) { ; }
+			_process(nullptr) { ; }
 
 		void interpreter(infi_interpreter_t<_Elems...>& proc) {
 			_process = &proc;
@@ -51,7 +51,7 @@ namespace Infinity {
 		}
 
 		void run() {
-			if ( _process == NULL )
+			if ( _process == nullptr )
 				Error::send<Error::Fatality::Thread>(
 					Error::Type::NullDeref,
 					"Cannot start module %s, no message interpreter in place!",

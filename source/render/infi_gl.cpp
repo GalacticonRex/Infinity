@@ -1160,4 +1160,84 @@ namespace Render {
 	BufferBindPoint infi_gl_t::TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER;
 	BufferBindPoint infi_gl_t::UNIFORM_BUFFER = GL_UNIFORM_BUFFER;
 
+
+	template<> bool infi_gl_t::getComponents<float32>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 1;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec2>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 2;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec3>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 3;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec4>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 4;
+		return true;
+	}
+
+	template<> bool infi_gl_t::getComponents<int32>(AttribType& type, uint32& count) {
+		type = TYPE_INT;
+		count = 1;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec2i>(AttribType& type, uint32& count) {
+		type = TYPE_INT;
+		count = 2;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec3i>(AttribType& type, uint32& count) {
+		type = TYPE_INT;
+		count = 3;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec4i>(AttribType& type, uint32& count) {
+		type = TYPE_INT;
+		count = 4;
+		return true;
+	}
+
+	template<> bool infi_gl_t::getComponents<uint32>(AttribType& type, uint32& count) {
+		type = TYPE_UNSIGNED_INT;
+		count = 1;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec2ui>(AttribType& type, uint32& count) {
+		type = TYPE_UNSIGNED_INT;
+		count = 2;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec3ui>(AttribType& type, uint32& count) {
+		type = TYPE_UNSIGNED_INT;
+		count = 3;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::vec4ui>(AttribType& type, uint32& count) {
+		type = TYPE_UNSIGNED_INT;
+		count = 4;
+		return true;
+	}
+
+	template<> bool infi_gl_t::getComponents<core::mat2>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 4;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::mat3>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 9;
+		return true;
+	}
+	template<> bool infi_gl_t::getComponents<core::mat4>(AttribType& type, uint32& count) {
+		type = TYPE_FLOAT;
+		count = 16;
+		return true;
+	}
+
 } }

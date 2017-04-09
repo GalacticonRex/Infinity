@@ -55,7 +55,7 @@ namespace Infinity {
 		infi_input_events_t& input;
 		infi_event_clock_t clock;
 
-		infi_controller_t(infi_lib_init_t&);
+		infi_controller_t(const infi_lib_init_t&);
 		~infi_controller_t();
 
 		infi_window_t& createWindow(const std::string&, const core::vec2ui&, uint32);

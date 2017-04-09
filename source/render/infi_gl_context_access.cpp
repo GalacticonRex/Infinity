@@ -9,7 +9,7 @@ namespace Render {
 		return (gl.version > version);
 	}
 	void infi_gl_context_access_t::__sync_framebuffer__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, infi_framebuffer_bindings_t*& data) const {
-		if ( data == NULL )
+		if ( data == nullptr )
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"Cannot synchronize null framebuffer!"
@@ -23,7 +23,7 @@ namespace Render {
 		return (gl.version > version);
 	}
 	void infi_gl_context_access_t::__bind_framebuffer__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, infi_framebuffer_bindings_t*& data) const {
-		if ( data == NULL ) {
+		if ( data == nullptr ) {
 			gl.BindFramebuffer(0);
 		} else {
 			infi_framebuffer_bindings_t& fbo = *data;
@@ -43,7 +43,7 @@ namespace Render {
 		return (gl.version > version);
 	}
 	void infi_gl_context_access_t::__sync_vertex_array__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, vao_ptr& data) const {
-		if ( data == NULL )
+		if ( data == nullptr )
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"Cannot synchronize null framebuffer!"
@@ -57,7 +57,7 @@ namespace Render {
 		return (gl.version > version);
 	}
 	void infi_gl_context_access_t::__bind_vertex_array__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, vao_ptr& data) const {
-		if ( data == NULL ) {
+		if ( data == nullptr ) {
 			gl.BindVertexArray(0);
 		} else {
 			infi_vertex_array_bindings_t& vao = *data;
@@ -76,7 +76,7 @@ namespace Render {
 		return true;
 	}
 	void infi_gl_context_access_t::__sync_blend_func__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, infi_blend_function_bindings_t*& blend) const {
-		if ( blend == NULL )
+		if ( blend == nullptr )
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"No blend function to bind!"
@@ -90,7 +90,7 @@ namespace Render {
 		return true;
 	}
 	void infi_gl_context_access_t::__sync_blend_eq__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, infi_blend_equation_bindings_t*& blend) const {
-		if ( blend == NULL )
+		if ( blend == nullptr )
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"No blend function to bind!"
@@ -111,7 +111,7 @@ namespace Render {
 	}
 
 	infi_gl_context_access_t::infi_gl_context_access_t() :
-		_context(NULL) {
+		_context(nullptr) {
 		_framebuffers.current = 0;
 		_vertex_arrays.current = 0;
 		_transform_feedback.current = 0;
@@ -122,7 +122,7 @@ namespace Render {
 	}
 
 	infi_gl_context_t& infi_gl_context_access_t::current() {
-		if ( _context -> getCurrentContext() == NULL ) {
+		if ( _context -> getCurrentContext() == nullptr ) {
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"no context currently bound"
@@ -152,7 +152,7 @@ namespace Render {
 	}
 
 	uint32 infi_gl_context_access_t::framebuffer(uint32 x) const {
-		if ( _context -> getCurrentContext() == NULL ) {
+		if ( _context -> getCurrentContext() == nullptr ) {
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"no context currently bound"
@@ -161,7 +161,7 @@ namespace Render {
 		return _context -> getCurrentContext() -> framebuffer(x).handle;
 	}
 	uint32 infi_gl_context_access_t::vertexArray(uint32 x) const {
-		if ( _context -> getCurrentContext() == NULL ) {
+		if ( _context -> getCurrentContext() == nullptr ) {
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"no context currently bound"
@@ -170,7 +170,7 @@ namespace Render {
 		return _context -> getCurrentContext() -> vertexArray(x).handle;
 	}
 	uint32 infi_gl_context_access_t::transformFeedback(uint32 x) const {
-		if ( _context -> getCurrentContext() == NULL ) {
+		if ( _context -> getCurrentContext() == nullptr ) {
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"no context currently bound"

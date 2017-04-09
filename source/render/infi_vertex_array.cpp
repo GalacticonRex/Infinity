@@ -99,15 +99,13 @@ namespace Render {
 		_indices(0),
 		_vertex_count(0) { ; }
 
-	void infi_vertex_array_t::create(infi_synchronized_renderer_t& r) {
+	void infi_vertex_array_t::create(infi_renderer_t& r) {
 		if ( _handle != 0 )
 			Error::send<Error::Fatality::Method>(
 				Error::Type::Init,
 				"Vertex Object already initialized"
 			);
-
-		infi_synchronized_renderer_t::Acquire rend(r);
-		_handle = rend -> createVertexArray();
+		_handle = r.createVertexArray();
 	}
 
 	bool infi_vertex_array_t::ready() const {

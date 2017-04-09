@@ -48,7 +48,7 @@ namespace Infinity {
 		}
 		template<typename _T>
 		void dealloc(_T* obj) {
-			if ( obj == NULL )
+			if ( obj == nullptr )
 				return;
 			
 			if ( (uint8*)obj < _data || (uint8*)obj >= _data + _Size )

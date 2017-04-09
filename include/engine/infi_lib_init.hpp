@@ -1,6 +1,7 @@
 #ifndef __INFI_LIBRARY_INITIALIZATION_HPP__
 #define __INFI_LIBRARY_INITIALIZATION_HPP__
 
+#include <functional>
 #include "engine/infi_engine_defs.hpp"
 
 namespace Infinity {
@@ -12,6 +13,8 @@ namespace Infinity {
 		infi_lib_init_t();
 		~infi_lib_init_t();
 	};
+
+	void DEFINE_EXPORT Run(std::function<void(const infi_lib_init_t&)>);
 
 }
 

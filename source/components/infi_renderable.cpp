@@ -8,7 +8,7 @@ namespace Infinity {
 	const uint32 RED_BLACK_MASK = 0x80000000;
 
 	infi_renderable_t::infi_renderable_t( const std::string& str )
-		: _name( str ), _parent(NULL), _zpos(0), _flags( ACTIVE_MASK | VISIBLE_MASK ) { }
+		: _name( str ), _parent(nullptr), _zpos(0), _flags( ACTIVE_MASK | VISIBLE_MASK ) { }
 	infi_renderable_t::~infi_renderable_t() {
 
 	}
@@ -24,7 +24,7 @@ namespace Infinity {
 		return *_parent;
 	}
 	void infi_renderable_t::parent( infi_window_t& win ) {
-		if ( _parent != NULL )
+		if ( _parent != nullptr )
 			(*_parent).remove(this);
 		_parent = &win;
 	}
@@ -34,7 +34,7 @@ namespace Infinity {
 	}
 	void infi_renderable_t::depth( uint32 nd) {
 		_zpos = nd;
-		if ( _parent != NULL ) {
+		if ( _parent != nullptr ) {
 			(*_parent).remove(this);
 			(*_parent).renderWith(this);
 		}

@@ -5,7 +5,7 @@
 namespace Infinity {
 
 	infi_controller_t::__module_error_handler__::__module_error_handler__() :
-		_root(NULL) { ; }
+		_root(nullptr) { ; }
 			
 	void infi_controller_t::__module_error_handler__::setRootModule(infi_root_module_t* rt) {
 		_root = rt;
@@ -19,7 +19,7 @@ namespace Infinity {
 		
 		std::cerr << "---------------------------------------------" << std::endl;
 
-		if ( _root != NULL ) _root -> signalError();
+		if ( _root != nullptr ) _root -> signalError();
 
 		return false;
 	}
@@ -31,7 +31,7 @@ namespace Infinity {
 		
 		std::cerr << "---------------------------------------------" << std::endl;
 		
-		if ( _root != NULL ) _root -> signalError();
+		if ( _root != nullptr ) _root -> signalError();
 
 		return false;
 	}
@@ -54,7 +54,7 @@ namespace Infinity {
 		return true;
 	}
 
-	infi_controller_t::infi_controller_t(infi_lib_init_t& lib) :
+	infi_controller_t::infi_controller_t(const infi_lib_init_t& lib) :
 		_displays(lib),
 		_winmngr("Window Manager", _error_handler),
 		_update("Update Manager", _error_handler),

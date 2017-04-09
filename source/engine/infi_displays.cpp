@@ -4,7 +4,7 @@
 
 namespace Infinity {
 
-	infi_display_list_t::infi_display_list_t(infi_lib_init_t& libs) {
+	infi_display_list_t::infi_display_list_t(const infi_lib_init_t& libs) {
 		uint32 sz = SDL_GetNumVideoDisplays();
 		for ( uint32 i=0;i<sz;i++ ) {
 			SDL_DisplayMode md;

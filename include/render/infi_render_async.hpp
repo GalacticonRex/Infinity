@@ -22,11 +22,21 @@ namespace Render {
 			void run(const infi_gl_t&, infi_gl_context_controller_t&, __async_data__&) const;
 		};
 
+		struct __async_empty__ : public infi_gl_function_t {
+		private:
+			std::function<void()> _func;
+		public:
+			__async_empty__(const std::function<void()>&);
+			bool compatible(const infi_gl_t&) const;
+			void operator()(const infi_gl_t&, infi_gl_context_controller_t&, infi_default_queue_t&) const;
+		};
+
 		infi_renderer_t& _renderer;
 
 	public:
 		infi_render_async_t(infi_renderer_t&, const infi_render_module_t::Function&);
 
+		infi_render_async_t then(const std::function<void()>&);
 		infi_render_async_t then(const infi_render_module_t::Function&);
 		infi_async_t then(infi_controller_t&, const infi_update_mngr_module_t::Function&);
 	};

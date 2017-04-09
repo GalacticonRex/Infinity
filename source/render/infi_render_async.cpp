@@ -13,12 +13,24 @@ namespace Render {
 	void infi_render_async_t::__async_loader__::run(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, __async_data__& data) const {
 		infi_async_t::runAsyncOperation(data.control, &data.call_order);
 	}
+	infi_render_async_t::__async_empty__::__async_empty__(const std::function<void()>& func) :
+		_func(func) { ; }
+	bool infi_render_async_t::__async_empty__::compatible(const infi_gl_t&) const {
+		return true;
+	}
+	void infi_render_async_t::__async_empty__::operator()(const infi_gl_t& gl, infi_gl_context_controller_t& ctx, infi_default_queue_t& q) const {
+		_func();
+	}
 
 	infi_render_async_t::infi_render_async_t(infi_renderer_t& R, const infi_render_module_t::Function& func) :
 		_renderer(R) {
 		_renderer.command(func);
 	}
 
+	infi_render_async_t infi_render_async_t::then(const std::function<void()>& func) {
+		__async_empty__ fun(func);
+		return infi_render_async_t(_renderer, fun);
+	}
 	infi_render_async_t infi_render_async_t::then(const infi_render_module_t::Function& func) {
 		return infi_render_async_t(_renderer, func);
 	}

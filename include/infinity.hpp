@@ -18,6 +18,9 @@
 #include "render/objects/basic/infi_texture.hpp"
 #include "render/objects/basic/infi_vertex_format.hpp"
 #include "render/objects/basic/infi_vertex_array.hpp"
+
+#include "render/objects/intermediate/infi_vertices.hpp"
+
 #include "render/infi_sync_renderer.hpp"
 
 namespace Infinity {
@@ -67,6 +70,8 @@ namespace Infinity {
 	typedef Render::infi_vertex_format_t VertexFormat;
 	typedef Render::infi_blend_func_t Blender;
 	typedef Render::infi_vertex_array_t VertexArray;
+
+	typedef Render::infi_vertices_t Vertices;
 }
 
 #endif//__INFINITY_H__

@@ -24,11 +24,11 @@ struct infi_gl_selector_t : infi_gl_command_t {
 private:
 	infi_gl_function_t* _use;
 protected:
-	virtual infi_gl_function_t* select(const infi_gl_t& gl) { return NULL; }
+	virtual infi_gl_function_t* select(const infi_gl_t& gl) { return nullptr; }
 public:
 	infi_gl_selector_t(const infi_gl_t& gl) :
 		_use(select(gl)) {
-		if ( _use == NULL ) {
+		if ( _use == nullptr ) {
 			//Error::define_scope __scope__("infi_gl_selector_t.ctor");
 			Error::send<Error::Fatality::Fatal>(
 				Error::Type::Graphics,

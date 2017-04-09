@@ -16,7 +16,7 @@ namespace Infinity {
 		_start_global(Time::Now()),
 		_start_stream(0),
 		_time(0.0),
-		_data({0,NULL}) { ; }
+		_data({0,nullptr}) { ; }
 
 	infi_event_queue_t::message_t::message_t(const infi_event_clock_t& str, float64 w, message d) :
 		_start_global(Time::Now()),
@@ -163,12 +163,12 @@ namespace Infinity {
 	}
 	const infi_event_queue_t::stream_ref_t* infi_event_queue_t::stream_heap_t::_peek() const {
 		if ( _data.size() == 0 )
-			return NULL;
+			return nullptr;
 		return _data[0];
 	}
 	infi_event_queue_t::stream_ref_t* infi_event_queue_t::stream_heap_t::_pop() {
 		if ( _data.size() == 0 )
-			return NULL;
+			return nullptr;
 
 		infi_event_queue_t::stream_ref_t* ret = _data[0];
 		infi_event_queue_t::stream_ref_t* last = _data.back();
@@ -187,7 +187,7 @@ namespace Infinity {
 
 	infi_event_queue_t::stream_ref_t* infi_event_queue_t::stream_heap_t::_get(infi_event_clock_t* str) {
 		stream_ref_t*& msgs = _mapping[str];
-		if ( msgs == NULL ) {
+		if ( msgs == nullptr ) {
 			if ( _available.empty() ) {
 				msgs = new stream_ref_t(str);
 				(*this).when(*str);
@@ -206,7 +206,7 @@ namespace Infinity {
 			if ( sig ) {
 				std::lock_guard<std::mutex> lk(_lock);
 				stream_ref_t* sr = _mapping[ts];
-				if ( sr != NULL ) {
+				if ( sr != nullptr ) {
 					sr->calculateValue();
 					this->_verify(sr);
 				}
@@ -245,13 +245,13 @@ namespace Infinity {
 			const stream_ref_t* str;
 			for( ;; ) {
 				str = this->_peek();
-				if ( str == NULL && _immediate.empty() )
+				if ( str == nullptr && _immediate.empty() )
 					_condition.wait(lk);
 				else
 					break;
 			}
 
-			if ( (str == NULL || (w=str->waitUntil()) > Time::Now()) && !_immediate.empty() ) {
+			if ( (str == nullptr || (w=str->waitUntil()) > Time::Now()) && !_immediate.empty() ) {
 				infi_event_queue_t::message msg = _immediate.front();
 				_immediate.pop();
 				return msg;
@@ -264,7 +264,7 @@ namespace Infinity {
 
 		if ( str->remaining() == 0 ) {
 			_available.push(str);
-			_mapping[str->stream()] = NULL;
+			_mapping[str->stream()] = nullptr;
 		} else {
 			str->calculateValue();
 			this->_push(str);

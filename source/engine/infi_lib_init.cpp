@@ -23,4 +23,31 @@ namespace Infinity {
 			SDL_Quit();
 	}
 
+	void Run(std::function<void(const infi_lib_init_t&)> func) {
+		infi_lib_init_t lib;
+		try {
+			func(lib);
+		} catch(Error::message<Error::Fatality::Fatal> e) {
+			std::cerr << "---------------------------------------------" << std::endl;
+			std::cerr << "Fatal Error in Construction" << std::endl;
+			e.display(std::cerr);
+			std::cerr << "---------------------------------------------" << std::endl;
+		} catch(Error::message<Error::Fatality::Thread> e) {
+			std::cerr << "---------------------------------------------" << std::endl;
+			std::cerr << "Thread Error in Construction" << std::endl;
+			e.display(std::cerr);
+			std::cerr << "---------------------------------------------" << std::endl;
+		} catch(Error::message<Error::Fatality::Method> e) {
+			std::cerr << "---------------------------------------------" << std::endl;
+			std::cerr << "Method Error in Construction" << std::endl;
+			e.display(std::cerr);
+			std::cerr << "---------------------------------------------" << std::endl;
+		} catch(Error::message<Error::Fatality::Warning> e) {
+			std::cerr << "---------------------------------------------" << std::endl;
+			std::cerr << "Warning in Construction" << std::endl;
+			e.display(std::cerr);
+			std::cerr << "---------------------------------------------" << std::endl;
+		}
+	}
+
 }

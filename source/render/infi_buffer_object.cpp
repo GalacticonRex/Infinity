@@ -18,12 +18,12 @@ namespace Render {
 		uint32 id;
 		gl.GenBuffers(1,&id);
 		gl.BindBuffer(GL_COPY_WRITE_BUFFER, id);
-		gl.BufferData(GL_COPY_WRITE_BUFFER, carry_over, NULL, GL_STREAM_COPY);
+		gl.BufferData(GL_COPY_WRITE_BUFFER, carry_over, nullptr, GL_STREAM_COPY);
 
 		if ( gl.extensions.require("copy_buffer") ) {
 			gl.BindBuffer(GL_COPY_READ_BUFFER, buffer);
 			gl.CopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, carry_over);
-			gl.BufferData(GL_COPY_READ_BUFFER, new_size, NULL, obj -> _usage);
+			gl.BufferData(GL_COPY_READ_BUFFER, new_size, nullptr, obj -> _usage);
 			gl.CopyBufferSubData(GL_COPY_WRITE_BUFFER, GL_COPY_READ_BUFFER, 0, 0, carry_over);
 		} else {
 			
@@ -54,7 +54,7 @@ namespace Render {
 		}
 	}
 
-	void infi_buffer_object_t::__upload(infi_renderer_t& r, uint32 offset, uint32 sz, uint8* data) {
+	infi_render_async_t infi_buffer_object_t::__upload(infi_renderer_t& r, uint32 offset, uint32 sz, uint8* data) {
 		__upload_item__ u;
 		u.buffer = this;
 		u.bind_point = GL_COPY_WRITE_BUFFER;
@@ -67,11 +67,13 @@ namespace Render {
 		r.pushBuffer(_handle, GL_COPY_WRITE_BUFFER);
 
 		_upload.push(r.state(), u);
-		r(_upload);
+		infi_render_async_t async(r, _upload);
 
 		r.popBuffer(GL_COPY_WRITE_BUFFER);
 
 		_generated ++ ;
+
+		return async;
 	}
 
 	infi_buffer_object_t::Bind::Bind(infi_renderer_t& r, infi_buffer_object_t& obj, BufferBindPoint b) :
@@ -90,23 +92,26 @@ namespace Render {
 		_renderer.popBuffer(_bind);
 	}
 
+	infi_render_async_t infi_buffer_object_t::Bind::raw_upload(uint32 bytes, void* data) {
+		return _buffer.__upload(_renderer, 0, bytes, (uint8*)data);
+	}
+
 	infi_buffer_object_t::infi_buffer_object_t() :
 		infi_resource_t(0),
 		_generated(false),
 		_usage(GL_STATIC_DRAW),
 		_size(0),
-		_mapping(NULL) { ; }
+		_mapping(nullptr) { ; }
 
 	infi_buffer_object_t::infi_buffer_object_t(infi_renderer_t& r, BufferBindPoint type) :
 		infi_resource_t(r.createBuffer(type)),
 		_generated(false),
 		_usage(GL_STATIC_DRAW),
 		_size(0),
-		_mapping(NULL) { ; }
+		_mapping(nullptr) { ; }
 
-	void infi_buffer_object_t::create(infi_synchronized_renderer_t& renderer, BufferBindPoint b) {
-		infi_synchronized_renderer_t::Acquire r(renderer);
-		_handle = r -> createBuffer(b);
+	void infi_buffer_object_t::create(infi_renderer_t& r, BufferBindPoint b) {
+		_handle = r.createBuffer(b);
 	}
 
 	bool infi_buffer_object_t::ready() const {

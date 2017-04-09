@@ -188,7 +188,7 @@ namespace Render {
 		infi_program_t();
 		infi_program_t(infi_renderer_t&);
 
-		void create(infi_synchronized_renderer_t&);
+		void create(infi_renderer_t&);
 		bool ready() const;
 
 		infi_render_async_t link(infi_renderer_t&);

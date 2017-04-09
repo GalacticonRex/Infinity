@@ -23,6 +23,9 @@ namespace Render {
 	struct DEFINE_EXPORT infi_texture_t;
 	struct DEFINE_EXPORT infi_framebuffer_t;
 
+	// Level 2 Objects
+	struct DEFINE_EXPORT infi_vertices_t;
+
 	// Formatters
 	struct DEFINE_EXPORT infi_blend_func_t;
 	struct DEFINE_EXPORT infi_vertex_format_t;

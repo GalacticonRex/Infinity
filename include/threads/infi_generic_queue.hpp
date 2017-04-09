@@ -29,7 +29,7 @@ namespace Infinity {
 			__element__() : _front(0),
 							_allocated(0),
 							_termin(_BlockSize),
-							_next(NULL) {
+							_next(nullptr) {
 				////__WriteError__("front&:     " << &_front);
 				////__WriteError__("allocated&: " << &_allocated);
 				////__WriteError__("termin&:    " << &_termin);
@@ -60,7 +60,7 @@ namespace Infinity {
 				// there is not enough space to allocate the new item
 				if ( !space_exists || (!space_at_end && !space_at_front) ) {
 					//__WriteError__("could not find space!");
-					if ( usenext == NULL ) {
+					if ( usenext == nullptr ) {
 						//Error::define_scope __scope__("infi_generic_queue_t.push");
 						Error::send<Error::Fatality::Method>(
 							Error::Type::Overflow,
@@ -68,7 +68,7 @@ namespace Infinity {
 						);
 					}
 					////__WriteError__("====================================");
-					usenext -> insert(item, NULL);
+					usenext -> insert(item, nullptr);
 					return usenext;
 				}
 				// there is enough space for allocation!

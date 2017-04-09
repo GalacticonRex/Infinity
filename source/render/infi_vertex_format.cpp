@@ -103,4 +103,90 @@ namespace Render {
 		output.vertexSize(_size);
 	}
 
+	template<>
+	bool infi_vertex_format_t::__matches_base<>(uint32 i) const {
+		return (i==_attributes.size());
+	}
+	template<>
+	void infi_vertex_format_t::__fill_data_base<>() { ; }
+
+	template<>
+	bool infi_vertex_format_t::__matches<float32>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 1);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec2>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 2);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec3>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 3);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec4>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 4);
+	}
+
+	template<>
+	bool infi_vertex_format_t::__matches<int32>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_INT && 
+				_attributes[i].count == 1);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec2i>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_INT && 
+				_attributes[i].count == 2);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec3i>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_INT && 
+				_attributes[i].count == 3);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec4i>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_INT && 
+				_attributes[i].count == 4);
+	}
+
+	template<>
+	bool infi_vertex_format_t::__matches<uint32>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_UNSIGNED_INT && 
+				_attributes[i].count == 1);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec2ui>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_UNSIGNED_INT && 
+				_attributes[i].count == 2);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec3ui>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_UNSIGNED_INT && 
+				_attributes[i].count == 3);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::vec4ui>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_UNSIGNED_INT && 
+				_attributes[i].count == 4);
+	}
+
+	template<>
+	bool infi_vertex_format_t::__matches<core::mat2>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 4);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::mat3>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 9);
+	}
+	template<>
+	bool infi_vertex_format_t::__matches<core::mat4>(uint32 i) const {
+		return (_attributes[i].type == infi_gl_t::TYPE_FLOAT && 
+				_attributes[i].count == 16);
+	}
+
 } }

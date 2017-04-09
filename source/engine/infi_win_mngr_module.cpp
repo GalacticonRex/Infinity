@@ -25,7 +25,7 @@ namespace Infinity {
 															 infi_win_mngr_module_t::destroyWindow& dw,
 															 Render::infi_render_module_t::destroyContext& dc) :
 		infi_win_mngr_module_t::interpreter(std::make_tuple(&_refresh, &_destroy_window, &_bind_renderable)),
-		_rendering(NULL),
+		_rendering(nullptr),
 		_active_windows(0),
 		_renderer(ctrl.createRenderer()),
 		_refresh_dsp(r),

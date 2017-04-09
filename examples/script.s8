@@ -1,0 +1,46 @@
+keys : Infinity.Keyboard
+
+CollisionManager : ()(
+	hidden List(Collidable) children
+
+	add(Collidable c) : children.add(c)
+	remove(Collidable c) : children.remove(c)
+)
+Collidable : (Infinity.Box box)(
+	moo : Infinity.Box, moo = box
+)
+
+Player : (CollisionManager mngr)(
+	base : Infinity.Object
+	collid : Collidable
+
+	mngr.add(collid)
+
+	run : (real.MetersPerSecond speed, () duringMove) (
+		bool alive = true
+
+		when(keys.leftArrow)(
+			base.x -= speed
+			duringMove()
+		)
+		when(keys.rightArrow)(
+			base.x += speed
+			duringMove()
+		)
+		when(collid.overlaps)(
+			base.position = collid.lastPosition
+		)
+
+		whileAlive = loop(
+			when(not alive)(
+				escape(whileAlive)
+			)
+		)
+	)
+)
+
+Player main
+
+main.run(0.25(real.MetersPerSecond), ()(
+	Console.write("I am now moving!")
+))

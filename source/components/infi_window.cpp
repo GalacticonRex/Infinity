@@ -40,8 +40,8 @@ infi_window_t::infi_window_t( const infi_display_list_t& disp, infi_win_mngr_mod
 	_lastframe( 0.0 ),
 	_clearcolor( 0,0,0,1 ),
 	_flags( INFI_WINDOW_CLEAR_ON_REFRESH ),
-	_sdl( NULL ),
-	_context(NULL),
+	_sdl( nullptr ),
+	_context(nullptr),
 	_keyboard(keycode::size),
 	_mouse(mousebutton::size),
 	_renderable(rb),
@@ -115,7 +115,7 @@ infi_window_t& infi_window_t::remove( infi_renderable_t* r ) {
 		);
 	}
 	_renderables.erase( iter );
-	r->_parent = NULL;
+	r->_parent = nullptr;
 	return *this;
 }
 infi_window_t& infi_window_t::remove( infi_renderable_t& r ) {
@@ -128,7 +128,7 @@ infi_window_t& infi_window_t::remove( infi_renderable_t& r ) {
 		);
 	}
 	_renderables.erase( iter );
-	r._parent = NULL;
+	r._parent = nullptr;
 	return *this;
 }
 

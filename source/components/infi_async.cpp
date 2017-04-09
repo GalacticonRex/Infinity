@@ -4,7 +4,7 @@
 namespace Infinity {
 
 	infi_async_t::call_order_t::call_order_t(const infi_update_mngr_module_t::Function& f) :
-		func(f), counterFinished(0), counterAlive(0), next(NULL) { ; }
+		func(f), counterFinished(0), counterAlive(0), next(nullptr) { ; }
 
 	void infi_async_t::call_order_t::operator()(infi_controller_t& ctrl) {
 		func(ctrl);
@@ -12,7 +12,7 @@ namespace Infinity {
 		counterFinished ++ ;
 
 		call_order_t* c;
-		if ( (c=next.exchange(NULL, std::memory_order_relaxed)) != NULL ) {
+		if ( (c=next.exchange(nullptr, std::memory_order_relaxed)) != nullptr ) {
 			ctrl.extendWith([c](infi_controller_t& ctrl){(*c)(ctrl);});
 		}
 
@@ -26,7 +26,7 @@ namespace Infinity {
 	}
 
 	infi_async_t::infi_async_t(infi_controller_t& ctrl) :
-		_ctrl(ctrl), _self(NULL) { ; }
+		_ctrl(ctrl), _self(nullptr) { ; }
 	infi_async_t::infi_async_t(infi_controller_t& ctrl, const infi_update_mngr_module_t::Function& f, bool delayed) :
 		_ctrl(ctrl), _self(new call_order_t(f)) {
 		call_order_t* c = _self;
@@ -40,7 +40,7 @@ namespace Infinity {
 	}
 
 	infi_async_t::call_order_t& infi_async_t::asyncOperation() {
-		if ( _self == NULL )
+		if ( _self == nullptr )
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
 				"No async operation yet defined!"

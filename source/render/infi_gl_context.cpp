@@ -274,7 +274,7 @@ infi_framebuffer_bindings_t& infi_gl_context_t::framebuffer(uint32 x) {
 		);
 	}
 	fbo_ptr& i = _framebuffers[x];
-	if ( i == NULL ) {
+	if ( i == nullptr ) {
 		i = &_controller.allocFramebuffer();
 	}
 	return *i;
@@ -287,7 +287,7 @@ infi_vertex_array_bindings_t& infi_gl_context_t::vertexArray(uint32 x) {
 		);
 	}
 	vao_ptr& i = _vertex_arrays[x];
-	if ( i == NULL ) {
+	if ( i == nullptr ) {
 		i = &_controller.allocVertexArray();
 	}
 	return *i;
@@ -300,7 +300,7 @@ infi_transform_feeback_bindings_t& infi_gl_context_t::transformFeedback(uint32 x
 		);
 	}
 	tfo_ptr& i = _transform_feedback[x];
-	if ( i == NULL ) {
+	if ( i == nullptr ) {
 		i = &_controller.allocTransformFeedback();
 	}
 	return *i;

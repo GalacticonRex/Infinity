@@ -5,7 +5,7 @@
 namespace Infinity {
 
 	infi_root_module_t::infi_root_module_t(infi_controller_t& ctrl, Render::infi_render_module_t::createContext& cc, infi_dispatch_terminate_t& t) :
-		_active(NULL),
+		_active(nullptr),
 		_window_count(0),
 		_renderer(ctrl.createRenderer()),
 		_keyboard(keycode::size),
@@ -100,7 +100,7 @@ namespace Infinity {
 	infi_window_t* infi_root_module_t::getWindowByID(uint32 id) const {
 		std::unordered_map<uint32, infi_window_t*>::const_iterator iter = _winids.find(id);
 		if ( iter == _winids.end() )
-			return NULL;
+			return nullptr;
 		else
 			return (*iter).second;
 	}
@@ -183,7 +183,7 @@ namespace Infinity {
 		//Error::define_scope __scope__( "handle_window_ev" );
 		const SDL_Event& ev = *(const SDL_Event*)evoid;
 		infi_window_t* wwin = getWindowByID(ev.window.windowID);
-		if ( wwin != NULL ) {
+		if ( wwin != nullptr ) {
 			switch( ev.window.event ) {
 
 				case SDL_WINDOWEVENT_SHOWN:
@@ -225,7 +225,7 @@ namespace Infinity {
 				case SDL_WINDOWEVENT_FOCUS_LOST:
 					wwin->_flags &= ~INFI_WINDOW_INTERNAL_FOCUS;
 					if ( _active == wwin )
-						_active = NULL;
+						_active = nullptr;
 					break;
 				case SDL_WINDOWEVENT_CLOSE:
 					wwin->close();
@@ -240,7 +240,7 @@ namespace Infinity {
 			//Error::define_scope __scope__( "handle_key_down_ev" );
 			try {
 				_input[ev.key.keysym.scancode](true);
-				if ( _active != NULL ) {
+				if ( _active != nullptr ) {
 					_active -> input[ev.key.keysym.scancode](true);
 				}
 			} catch ( Error::message<Error::Fatality::Method> e ) {
@@ -253,7 +253,7 @@ namespace Infinity {
 		const SDL_Event& ev = *(const SDL_Event*)evoid;
 		try {
 			_input[ev.key.keysym.scancode](false);
-			if ( _active != NULL ) {
+			if ( _active != nullptr ) {
 				_active -> input[ev.key.keysym.scancode](false);
 			}
 		} catch ( Error::message<Error::Fatality::Method> e ) {
@@ -271,7 +271,7 @@ namespace Infinity {
 
 		infi_input_events_t::mouse_data data{p,d};
 		_input.mouse.position.propagate(data, true);
-		if ( w != NULL ) {
+		if ( w != nullptr ) {
 			w -> input.mouse.position.propagate(data, true);
 		}
 	}
@@ -280,7 +280,7 @@ namespace Infinity {
 		const SDL_Event& ev = *(const SDL_Event*)evoid;
 		infi_window_t* w = _winids[ev.motion.windowID];
 		_input.mouse[ev.button.button].propagate(true);
-		if ( w != NULL ) {
+		if ( w != nullptr ) {
 			w -> input.mouse[ev.button.button].propagate(true);
 		}
 	}
@@ -289,7 +289,7 @@ namespace Infinity {
 		const SDL_Event& ev = *(const SDL_Event*)evoid;
 		infi_window_t* w = _winids[ev.motion.windowID];
 		_input.mouse[ev.button.button].propagate(false);
-		if ( w != NULL ) {
+		if ( w != nullptr ) {
 			w -> input.mouse[ev.button.button].propagate(false);
 		}
 	}
@@ -301,7 +301,7 @@ namespace Infinity {
 		core::vec2i wh( ev.wheel.x, ev.wheel.y );
 
 		_input.mouse.wheel.propagate(wh, true);
-		if ( w != NULL ) {
+		if ( w != nullptr ) {
 			w -> input.mouse.wheel.propagate(wh, true);
 		}
 	}
@@ -313,7 +313,7 @@ namespace Infinity {
 									  win->width(),
 									  win->height(),
 									  win->buildFlags() );
-		if ( win->_sdl == NULL ) {
+		if ( win->_sdl == nullptr ) {
 			delete win;
 			Error::send<Error::Fatality::Method>(
 				Error::Type::Init,
@@ -357,7 +357,7 @@ namespace Infinity {
 		delete win;
 
 		if ( _active == win )
-			_active = NULL;
+			_active = nullptr;
 	}
 
 	void infi_root_module_t::run() {

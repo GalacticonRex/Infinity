@@ -60,7 +60,7 @@ namespace Render {
 
 	void infi_gl_context_controller_t::__set_current(void* ctx) {
 		infi_gl_context_t*& glctx = _contexts[ctx];
-		if ( glctx == NULL ) {
+		if ( glctx == nullptr ) {
 			glctx = new infi_gl_context_t(_gl, perContext);
 		}
 		_current_context = glctx;

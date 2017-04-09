@@ -50,7 +50,7 @@ namespace Render {
 		infi_vertex_array_t();
 		infi_vertex_array_t(infi_renderer_t&);
 
-		void create(infi_synchronized_renderer_t&);
+		void create(infi_renderer_t&);
 		bool ready() const;
 
 		uint32 vertexCount() const;

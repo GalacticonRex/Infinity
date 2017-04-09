@@ -61,16 +61,16 @@ namespace Render {
 		uint32 vshader = 0, fshader = 0;
 
 		vshader = gl.CreateShader(GL_VERTEX_SHADER);
-		gl.ShaderSource(vshader, 1, &program.vertex, NULL);
+		gl.ShaderSource(vshader, 1, &program.vertex, nullptr);
 		gl.CompileShader(vshader);
 
 		__check_shader(gl, "Vertex Shader", vshader);
 
 		gl.AttachShader(handle, vshader);
 
-		if ( program.fragment != NULL ) {
+		if ( program.fragment != nullptr ) {
 			fshader = gl.CreateShader(GL_FRAGMENT_SHADER);
-			gl.ShaderSource(fshader, 1, &program.fragment, NULL);
+			gl.ShaderSource(fshader, 1, &program.fragment, nullptr);
 			gl.CompileShader(fshader);
 
 			__check_shader(gl, "Fragment Shader", fshader);
@@ -311,17 +311,16 @@ namespace Render {
 	infi_program_t::infi_program_t() :
 		infi_resource_t(0),
 		_linked(0),
-		vertex(NULL),
-		fragment(NULL) { ; }
+		vertex(nullptr),
+		fragment(nullptr) { ; }
 	infi_program_t::infi_program_t(infi_renderer_t& r) :
 		infi_resource_t(r.createProgram()),
 		_linked(0),
-		vertex(NULL),
-		fragment(NULL) { ; }
+		vertex(nullptr),
+		fragment(nullptr) { ; }
 
-	void infi_program_t::create(infi_synchronized_renderer_t& renderer) {
-		infi_synchronized_renderer_t::Acquire r(renderer);
-		_handle = r -> createProgram();
+	void infi_program_t::create(infi_renderer_t& r) {
+		_handle = r.createProgram();
 	}
 
 	bool infi_program_t::ready() const {
@@ -336,7 +335,7 @@ namespace Render {
 				"Program has already been linked!"
 			);
 		}
-		if ( vertex == NULL ) {
+		if ( vertex == nullptr ) {
 			//Error::define_scope __scope__("infi_program_t.link");
 			Error::send<Error::Fatality::Method>(
 				Error::Type::NullDeref,
